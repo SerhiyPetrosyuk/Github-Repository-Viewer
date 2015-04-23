@@ -10,4 +10,10 @@
     <string name="followings" >%1$s \nfollowings</string>
     <string name="repositories">Repositories</string>
     <string name="language">"Language: %1$s"</string>
+
+    <string name="facebook_app_id">433812576797259</string>
+
+    <!--  Errors  -->
+    <string name="load_followers_error">Can't load followers</string>
+    <string name="load_followings_error">Can't load followings</string>
 </resources>

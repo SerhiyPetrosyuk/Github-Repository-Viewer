@@ -137,7 +137,7 @@ public class DetailUserInfoPresenter implements DetailPresenter {
 
         @Override
         public void onError() {
-            // TODO
+            mView.showError(mContext.getString(R.string.load_followers_error));
         }
     };
 
@@ -150,7 +150,7 @@ public class DetailUserInfoPresenter implements DetailPresenter {
 
         @Override
         public void onError() {
-            // TODO
+            mView.showError(mContext.getString(R.string.load_followings_error));
         }
     };
 
@@ -165,7 +165,7 @@ public class DetailUserInfoPresenter implements DetailPresenter {
 
         @Override
         public void onError() {
-            // TODO
+            mView.stopRepositoryLoading();
         }
     };
 

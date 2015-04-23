@@ -13,4 +13,6 @@ public interface DetailView {
     void setFollowings(String followingsString);
     void onLoadAvatarError();
     void setListAdapter(BaseAdapter adapter);
+    void stopRepositoryLoading();
+    void showError(String errorText);
 }

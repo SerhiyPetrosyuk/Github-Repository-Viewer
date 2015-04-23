@@ -102,6 +102,16 @@ public class DetailFragment extends Fragment implements DetailView, View.OnClick
     }
 
     @Override
+    public void stopRepositoryLoading() {
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showError(String errorText) {
+        Toast.makeText(getActivity(), errorText, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()){
