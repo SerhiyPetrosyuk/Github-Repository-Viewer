@@ -29,4 +29,7 @@ dependencies {
     provided 'org.glassfish:javax.annotation:10.0-b28'
     compile project(':data')
     compile project(':domain')
+
+    // Facebook
+    compile 'com.facebook.android:facebook-android-sdk:4.0.0'
 }

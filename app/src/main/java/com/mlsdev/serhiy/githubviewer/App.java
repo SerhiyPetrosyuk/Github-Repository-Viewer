@@ -2,6 +2,7 @@ package com.mlsdev.serhiy.githubviewer;
 
 import android.app.Application;
 
+import com.facebook.FacebookSdk;
 import com.mlsdev.serhiy.data.net.requests.RequestExecutor;
 import com.mlsdev.serhiy.githubviewer.internal.di.components.AppComponent;
 import com.mlsdev.serhiy.githubviewer.internal.di.components.DaggerAppComponent;
@@ -26,6 +27,8 @@ public class App extends Application {
 
         RequestExecutor.init(this); // Initialize a request executor.
         PrefManager.init(this); // Initialize a preference manager.
+
+        FacebookSdk.sdkInitialize(this);
     }
 
     public void inject(SearchFragment searchFragment){
