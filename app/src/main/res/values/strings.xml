@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Github Viewer</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="input_user_name">input username to know more:</string>
+    <string name="some_user_name_hint">some Github username</string>
+    <string name="btn_search">search</string>
+    <string name="followers" >%1$s \nfollowers</string>
+    <string name="followings" >%1$s \nfollowings</string>
+    <string name="repositories">Repositories</string>
+    <string name="language">"Language: %1$s"</string>
+</resources>

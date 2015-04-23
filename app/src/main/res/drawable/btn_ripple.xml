@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/gray_shape" android:state_pressed="true" />
+    <item>
+        <shape android:shape="rectangle">
+            <size android:height="50dp" android:width="50dp" />
+            <stroke android:color="@android:color/black" android:width="0.5dp" />
+        </shape>
+    </item>
+</selector>

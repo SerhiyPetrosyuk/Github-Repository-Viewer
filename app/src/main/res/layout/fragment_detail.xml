@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="33"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_followers"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:gravity="center"
+                android:layout_marginBottom="32dp"/>
+
+            <ImageButton
+                android:id="@+id/ib_open_in_web"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:scaleType="centerInside"
+                android:src="@mipmap/ic_open_in_web"
+                android:background="@drawable/transparent_bg"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="34"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/abc_action_bar_home_description"
+                android:layout_marginBottom="32dp"/>
+
+            <ImageView
+                android:id="@+id/iv_user_avatar"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true" />
+
+            <ImageButton
+                android:id="@+id/ib_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:src="@mipmap/ic_save_action"
+                android:background="@drawable/transparent_bg"
+                android:layout_marginTop="32dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="33"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tv_following"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:gravity="center"
+                android:layout_marginBottom="32dp"/>
+
+            <ImageButton
+                android:id="@+id/ib_share"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:scaleType="centerInside"
+                android:src="@mipmap/ic_share_action"
+                android:background="@drawable/transparent_bg"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/repositories"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:padding="16dp"/>
+
+    <FrameLayout
+        android:id="@+id/divider"
+        style="@style/divider"  />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ListView
+            android:id="@+id/lv_repository_list"
+            style="@style/list_view_style"/>
+
+        <ProgressBar
+            android:id="@+id/pd_load_repositories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
+
+</LinearLayout>

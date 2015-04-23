@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingRight="16dp"
+    android:paddingLeft="16dp"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_ripple"
+        android:padding="8dp">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="65">
+
+            <TextView
+                android:id="@+id/tv_repository_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/tv_language_label"
+                android:layout_below="@id/tv_repository_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:text="@string/language"/>
+
+            </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_weight="35"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_forks_number"
+                style="@style/list_item_points_text"/>
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:src="@mipmap/ic_fork"
+                android:layout_weight="25"/>
+
+            <TextView
+                android:id="@+id/tv_stars_number"
+                style="@style/list_item_points_text"/>
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:src="@mipmap/ic_star"
+                android:layout_weight="25"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
