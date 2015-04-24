@@ -1,4 +1,4 @@
-package com.mlsdev.serhiy.data.net.requests;
+package com.mlsdev.serhiy.data.net;
 
 import android.graphics.Bitmap;
 import android.util.LruCache;

@@ -2,6 +2,11 @@ package com.mlsdev.serhiy.data.net;
 
 import android.graphics.Bitmap;
 
+import com.mlsdev.serhiy.domain.model.GithubRepository;
+import com.mlsdev.serhiy.domain.model.GithubUser;
+
+import java.util.Collection;
+
 import javax.inject.Singleton;
 
 /**
@@ -22,9 +27,10 @@ public interface RestApi {
     public static String FOLLOWINGS_PATH = "/following";
 
     /**
-     * Callback is used to be notified either a request was success or an error happened. */
+     * Callback is used to be notified either a request was success or an error happened.
+     * */
     interface SearchUserRequestCallback{
-        void onRequestSuccess(String json);
+        void onRequestSuccess(GithubUser githubUser);
         void onError();
     }
 
@@ -32,7 +38,7 @@ public interface RestApi {
      * Callback is used to be notified either a request was success or an error happened.
      * */
     interface SearchRepositoriesRequestCallback{
-        void onRequestSuccess(String json);
+        void onRequestSuccess(Collection<GithubRepository> githubRepositories);
         void onError();
     }
 

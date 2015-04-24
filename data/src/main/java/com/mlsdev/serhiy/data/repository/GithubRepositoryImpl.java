@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 
 import com.mlsdev.serhiy.data.entity.mapper.EntityJsonMapper;
 import com.mlsdev.serhiy.data.entity.mapper.ModelEntityMapper;
-import com.mlsdev.serhiy.data.entity.repository.Item;
 import com.mlsdev.serhiy.data.net.RestApi;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.domain.model.GithubUser;
@@ -72,10 +71,7 @@ public class GithubRepositoryImpl implements GithubUserRepository {
 
     private RestApi.SearchUserRequestCallback userRequestCallback = new RestApi.SearchUserRequestCallback() {
         @Override
-        public void onRequestSuccess(String json) {
-            com.mlsdev.serhiy.data.entity.user.Item userEntity = mJsonMapper.transformUser(json);
-            GithubUser githubUser = mModelEntityMapper.transformUserEntity(userEntity);
-
+        public void onRequestSuccess(GithubUser githubUser) {
             if (githubUser != null)
                 githubUserCallback.onUserLoaded(githubUser);
             else
@@ -90,9 +86,7 @@ public class GithubRepositoryImpl implements GithubUserRepository {
 
     private RestApi.SearchRepositoriesRequestCallback repositoriesRequestCallback = new RestApi.SearchRepositoriesRequestCallback() {
         @Override
-        public void onRequestSuccess(String json) {
-            Collection<Item> repositoryCollection = mJsonMapper.transformRepositoryCollection(json);
-            Collection<GithubRepository> githubRepositories = mModelEntityMapper.transformRepositoryEntities(repositoryCollection);
+        public void onRequestSuccess(Collection<GithubRepository> githubRepositories) {
             githubRepositoryCallback.onRepositoriesLoaded(githubRepositories);
         }
 

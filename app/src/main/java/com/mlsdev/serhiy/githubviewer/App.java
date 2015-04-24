@@ -3,7 +3,7 @@ package com.mlsdev.serhiy.githubviewer;
 import android.app.Application;
 
 import com.facebook.FacebookSdk;
-import com.mlsdev.serhiy.data.net.requests.RequestExecutor;
+import com.mlsdev.serhiy.data.net.RequestExecutor;
 import com.mlsdev.serhiy.githubviewer.internal.di.components.AppComponent;
 import com.mlsdev.serhiy.githubviewer.internal.di.components.DaggerAppComponent;
 import com.mlsdev.serhiy.githubviewer.internal.di.modules.AppModule;

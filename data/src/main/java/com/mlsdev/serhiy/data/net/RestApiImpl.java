@@ -7,12 +7,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.mlsdev.serhiy.data.entity.mapper.EntityJsonMapper;
-import com.mlsdev.serhiy.data.net.requests.RequestExecutor;
+import com.mlsdev.serhiy.data.entity.user.Item;
+import com.mlsdev.serhiy.data.net.requests.SearchRepositoryRequest;
+import com.mlsdev.serhiy.data.net.requests.SearchUserRequest;
+import com.mlsdev.serhiy.domain.model.GithubRepository;
+import com.mlsdev.serhiy.domain.model.GithubUser;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
+
+import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -43,20 +47,22 @@ public class RestApiImpl implements RestApi {
         mUserRequestCallback = callback;
 
         String url = SEARCH_USER_BASE_URL + searchedName;
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject jsonObject) {
-                    String json = jsonObject.toString();
-                    mUserRequestCallback.onRequestSuccess(json);
-                }
-            },
-            new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError volleyError) {
-                    mUserRequestCallback.onError();
-                }
-            });
+
+        SearchUserRequest<GithubUser, Item> request;
+        request = new SearchUserRequest<>(Request.Method.GET, url,
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            mUserRequestCallback.onError();
+                        }
+                    },
+                    new Response.Listener<GithubUser>() {
+                        @Override
+                        public void onResponse(GithubUser githubUser) {
+                            mUserRequestCallback.onRequestSuccess(githubUser);
+                        }
+                    }
+                );
 
         RequestExecutor.getRequestQueue().add(request);
     }
@@ -65,21 +71,23 @@ public class RestApiImpl implements RestApi {
     public void searchRepositoriesRequest(String repositoriesUrl, SearchRepositoriesRequestCallback callback) {
         mRepositoriesRequestCallback = callback;
 
-        JsonArrayRequest request = new JsonArrayRequest(repositoriesUrl,
-                    new Response.Listener<JSONArray>() {
-                        @Override
-                        public void onResponse(JSONArray jsonArray) {
-                            String json = jsonArray.toString();
-                            mRepositoriesRequestCallback.onRequestSuccess(json);
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-                            mRepositoriesRequestCallback.onError();
-                        }
+        SearchRepositoryRequest<GithubRepository, com.mlsdev.serhiy.data.entity.repository.Item> request;
+        request = new SearchRepositoryRequest<>(
+                Request.Method.GET,
+                repositoriesUrl,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        mRepositoriesRequestCallback.onError();
                     }
-                );
+                },
+                new Response.Listener<Collection<GithubRepository>>() {
+                    @Override
+                    public void onResponse(Collection<GithubRepository> githubRepositories) {
+                        mRepositoriesRequestCallback.onRequestSuccess(githubRepositories);
+                    }
+                }
+            );
 
         RequestExecutor.getRequestQueue().add(request);
     }
