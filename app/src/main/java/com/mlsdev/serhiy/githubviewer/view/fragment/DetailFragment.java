@@ -26,20 +26,27 @@ import com.mlsdev.serhiy.githubviewer.view.widget.RoundedView;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 /**
  * Created by Serhiy Petrosyuk on 16.04.15.
  */
-public class DetailFragment extends Fragment implements DetailView, View.OnClickListener {
+public class DetailFragment extends Fragment implements DetailView {
 
-    private TextView    mUserNameTextView;
-    private TextView    mFollowersTextView;
-    private TextView    mFollowingsTextView;
-    private ImageView   mUserAvatarImageView;
-    private ImageButton mOpenInBrowserButton;
-    private ImageButton mShareButton;
-    private Bundle      mUserData;
-    private ListView    mListView;
-    private ProgressBar mProgressBar;
+    // region the Views' injection
+    @InjectView(R.id.tv_username)          TextView    mUserNameTextView;
+    @InjectView(R.id.tv_followers)         TextView    mFollowersTextView;
+    @InjectView(R.id.tv_following)         TextView    mFollowingsTextView;
+    @InjectView(R.id.iv_user_avatar)       ImageView   mUserAvatarImageView;
+    @InjectView(R.id.ib_open_in_web)       ImageButton mOpenInBrowserButton;
+    @InjectView(R.id.ib_share)             ImageButton mShareButton;
+    @InjectView(R.id.lv_repository_list)   ListView    mListView;
+    @InjectView(R.id.pd_load_repositories) ProgressBar mProgressBar;
+    // endregion
+
+    private Bundle mUserData;
 
     @Inject
     DetailPresenter mPresenter;
@@ -56,14 +63,7 @@ public class DetailFragment extends Fragment implements DetailView, View.OnClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View detailFragment = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_detail, container, false);
 
-        mUserNameTextView    = (TextView)   detailFragment.findViewById(R.id.tv_username);
-        mUserAvatarImageView = (ImageView)  detailFragment.findViewById(R.id.iv_user_avatar);
-        mFollowersTextView   = (TextView)   detailFragment.findViewById(R.id.tv_followers);
-        mFollowingsTextView  = (TextView)   detailFragment.findViewById(R.id.tv_following);
-        mOpenInBrowserButton = (ImageButton)detailFragment.findViewById(R.id.ib_open_in_web);
-        mShareButton         = (ImageButton)detailFragment.findViewById(R.id.ib_share);
-        mListView            = (ListView)   detailFragment.findViewById(R.id.lv_repository_list);
-        mProgressBar         = (ProgressBar)detailFragment.findViewById(R.id.pd_load_repositories);
+        ButterKnife.inject(this, detailFragment);
 
         mUserNameTextView.setText(mUserData.getString(SearchUserPresenter.EXTRA_USER_NAME));
 
@@ -72,9 +72,6 @@ public class DetailFragment extends Fragment implements DetailView, View.OnClick
         mPresenter.loadUserAvatar();
         mPresenter.getFollows();
         mPresenter.searchRepositories();
-
-        mOpenInBrowserButton.setOnClickListener(this);
-        mShareButton.setOnClickListener(this);
 
         return detailFragment;
     }
@@ -121,18 +118,13 @@ public class DetailFragment extends Fragment implements DetailView, View.OnClick
         ShareDialog.show(this, linkContent);
     }
 
-    @Override
-    public void onClick(View v) {
+    @OnClick(R.id.ib_open_in_web)
+    public void openInBrowserOnClick(){
+        mPresenter.openProfileInBrowser();
+    }
 
-        switch (v.getId()){
-            case R.id.ib_open_in_web :
-                mPresenter.openProfileInBrowser();
-                break;
-            case R.id.ib_share :
-                mPresenter.share();
-            default:
-                break;
-        }
-
+    @OnClick(R.id.ib_share)
+    public void shareOnClick(){
+        mPresenter.share();
     }
 }

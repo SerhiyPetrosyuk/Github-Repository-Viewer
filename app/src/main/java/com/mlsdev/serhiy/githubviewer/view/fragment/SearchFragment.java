@@ -20,18 +20,20 @@ import com.mlsdev.serhiy.githubviewer.view.SearchView;
 
 import javax.inject.Inject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 /**
  * Created by Serhiy Petrosyuk on 16.04.15.
  */
 public class SearchFragment extends Fragment implements SearchView {
+    @Inject SearchPresenter mPresenter;
 
-    @Inject
-    SearchPresenter mPresenter;
-
-    private ImageButton    mSearchButton;
-    private EditText       mSearchedNameEditText;
-    private ProgressBar    mProgressBar;
-    private RelativeLayout mContentHolder;
+    @InjectView(R.id.btn_search)        ImageButton    mSearchButton;
+    @InjectView(R.id.et_user_name)      EditText       mSearchedNameEditText;
+    @InjectView(R.id.pb_search_screen)  ProgressBar    mProgressBar;
+    @InjectView(R.id.rl_content_holder) RelativeLayout mContentHolder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,12 +47,7 @@ public class SearchFragment extends Fragment implements SearchView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View searchFragment = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_search, container, false);
 
-        mSearchButton         = (ImageButton) searchFragment.findViewById(R.id.btn_search);
-        mSearchedNameEditText = (EditText) searchFragment.findViewById(R.id.et_user_name);
-        mProgressBar          = (ProgressBar) searchFragment.findViewById(R.id.pb_search_screen);
-        mContentHolder        = (RelativeLayout) searchFragment.findViewById(R.id.rl_content_holder);
-        mSearchButton.setOnClickListener(new OnSearchClickListener());
-
+        ButterKnife.inject(this, searchFragment);
         mPresenter.setSearchView(this);
 
         return searchFragment;
@@ -90,11 +87,9 @@ public class SearchFragment extends Fragment implements SearchView {
         Toast.makeText(getActivity(), "Error!", Toast.LENGTH_LONG).show();
     }
 
-    public class OnSearchClickListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            mPresenter.searchUser(mSearchedNameEditText.getText().toString());
-        }
+    @OnClick(R.id.btn_search)
+    public void searchViewOnClick(){
+        mPresenter.searchUser(mSearchedNameEditText.getText().toString());
     }
+
 }

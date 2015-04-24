@@ -94,6 +94,7 @@
     <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="facebook-android-sdk-4.0.0" level="project" />
     <orderEntry type="library" exported="" name="bolts-android-1.1.4" level="project" />
+    <orderEntry type="library" exported="" name="butterknife-6.1.0" level="project" />
     <orderEntry type="library" exported="" name="dagger-2.1-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="data" exported="" />
     <orderEntry type="module" module-name="domain" exported="" />

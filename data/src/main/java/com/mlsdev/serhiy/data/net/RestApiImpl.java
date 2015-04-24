@@ -30,12 +30,13 @@ public class RestApiImpl implements RestApi {
 
     private EntityJsonMapper mJsonMapper;
 
-    /*  Callbacks  */
+    // region Callbacks
     private SearchUserRequestCallback         mUserRequestCallback;
     private SearchRepositoriesRequestCallback mRepositoriesRequestCallback;
     private LoadAvatarRequestCallback         mAvatarRequestCallback;
     private GetFollowersRequestCallback       mFollowersRequestCallback;
     private GetFollowingsRequestCallback      mFollowingsRequestCallback;
+    // endregion
 
     @Inject
     public RestApiImpl(EntityJsonMapper jsonMapper) {
