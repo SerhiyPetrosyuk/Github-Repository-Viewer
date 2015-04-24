@@ -1,9 +1,9 @@
 package com.mlsdev.serhiy.githubviewer.view.fragment;
 
-import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.mlsdev.serhiy.githubviewer.App;
 import com.mlsdev.serhiy.githubviewer.R;
 import com.mlsdev.serhiy.githubviewer.presenter.DetailPresenter;
@@ -34,6 +36,7 @@ public class DetailFragment extends Fragment implements DetailView, View.OnClick
     private TextView    mFollowingsTextView;
     private ImageView   mUserAvatarImageView;
     private ImageButton mOpenInBrowserButton;
+    private ImageButton mShareButton;
     private Bundle      mUserData;
     private ListView    mListView;
     private ProgressBar mProgressBar;
@@ -58,6 +61,7 @@ public class DetailFragment extends Fragment implements DetailView, View.OnClick
         mFollowersTextView   = (TextView)   detailFragment.findViewById(R.id.tv_followers);
         mFollowingsTextView  = (TextView)   detailFragment.findViewById(R.id.tv_following);
         mOpenInBrowserButton = (ImageButton)detailFragment.findViewById(R.id.ib_open_in_web);
+        mShareButton         = (ImageButton)detailFragment.findViewById(R.id.ib_share);
         mListView            = (ListView)   detailFragment.findViewById(R.id.lv_repository_list);
         mProgressBar         = (ProgressBar)detailFragment.findViewById(R.id.pd_load_repositories);
 
@@ -70,6 +74,7 @@ public class DetailFragment extends Fragment implements DetailView, View.OnClick
         mPresenter.searchRepositories();
 
         mOpenInBrowserButton.setOnClickListener(this);
+        mShareButton.setOnClickListener(this);
 
         return detailFragment;
     }
@@ -112,12 +117,19 @@ public class DetailFragment extends Fragment implements DetailView, View.OnClick
     }
 
     @Override
+    public void share(ShareLinkContent linkContent) {
+        ShareDialog.show(this, linkContent);
+    }
+
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()){
             case R.id.ib_open_in_web :
                 mPresenter.openProfileInBrowser();
                 break;
+            case R.id.ib_share :
+                mPresenter.share();
             default:
                 break;
         }

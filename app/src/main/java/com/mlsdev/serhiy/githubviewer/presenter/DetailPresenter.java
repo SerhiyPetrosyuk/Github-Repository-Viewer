@@ -20,5 +20,5 @@ public interface DetailPresenter extends Presenter {
     void loadUserAvatar();
     void getFollows();
     void openProfileInBrowser();
-
+    void share();
 }

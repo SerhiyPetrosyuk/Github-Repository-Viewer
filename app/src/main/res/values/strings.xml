@@ -14,6 +14,6 @@
     <string name="facebook_app_id">433812576797259</string>
 
     <!--  Errors  -->
-    <string name="load_followers_error">Can't load followers</string>
-    <string name="load_followings_error">Can't load followings</string>
+    <string name="load_followers_error">Can\'t load followers</string>
+    <string name="load_followings_error">Can\'t load followings</string>
 </resources>

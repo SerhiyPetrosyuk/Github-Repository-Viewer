@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.facebook.share.model.ShareLinkContent;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowersUseCase;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowingsUseCase;
 import com.mlsdev.serhiy.domain.interactor.abstraction.LoadAvatarUseCase;
@@ -24,6 +25,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_AVATAR;
+import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_NAME;
+import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_PROFILE;
+import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_REPOS;
 
 /**
  * Created by Serhiy Petrosyuk on 20.04.15.
@@ -84,13 +90,13 @@ public class DetailUserInfoPresenter implements DetailPresenter {
 
     @Override
     public void searchRepositories() {
-        String repositoriesUrl = mUserData.getString(SearchUserPresenter.EXTRA_USER_REPOS, "");
+        String repositoriesUrl = mUserData.getString(EXTRA_USER_REPOS, "");
         mRepositoryUseCase.execute(repositoriesUrl, mSerachRepositoriesCallback);
     }
 
     @Override
     public void loadUserAvatar() {
-        String imageUrl = mUserData.getString(SearchUserPresenter.EXTRA_USER_AVATAR, "");
+        String imageUrl = mUserData.getString(EXTRA_USER_AVATAR, "");
         mLoadAvatarUseCase.execute(imageUrl, mLoadAvatarCallback);
     }
 
@@ -103,7 +109,7 @@ public class DetailUserInfoPresenter implements DetailPresenter {
 
     @Override
     public void openProfileInBrowser() {
-        String profileUrlString = mUserData.getString(SearchUserPresenter.EXTRA_USER_PROFILE, "");
+        String profileUrlString = mUserData.getString(EXTRA_USER_PROFILE, "");
         Uri profileUri = Uri.parse(profileUrlString);
         Intent intentToOpenProfileInBrowser = new Intent(Intent.ACTION_VIEW, profileUri);
         intentToOpenProfileInBrowser.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -112,8 +118,22 @@ public class DetailUserInfoPresenter implements DetailPresenter {
             mContext.startActivity(intentToOpenProfileInBrowser);
     }
 
+    @Override
+    public void share() {
+        Uri profileUri = Uri.parse(mUserData.getString(EXTRA_USER_PROFILE));
+        Uri userAvatar = Uri.parse(mUserData.getString(EXTRA_USER_AVATAR));
+        String username = getUsername();
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setContentUrl(profileUri)
+                .setImageUrl(userAvatar)
+                .setContentTitle(username)
+                .build();
+
+        mView.share(content);
+    }
+
     private String getUsername(){
-        return mUserData.getString(SearchUserPresenter.EXTRA_USER_NAME, "");
+        return mUserData.getString(EXTRA_USER_NAME, "");
     }
 
     private LoadAvatarUseCase.Callback mLoadAvatarCallback = new LoadAvatarUseCase.Callback() {

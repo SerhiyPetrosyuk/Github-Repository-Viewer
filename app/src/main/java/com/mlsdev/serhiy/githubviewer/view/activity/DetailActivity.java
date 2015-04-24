@@ -1,8 +1,8 @@
 package com.mlsdev.serhiy.githubviewer.view.activity;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.mlsdev.serhiy.githubviewer.R;
 import com.mlsdev.serhiy.githubviewer.view.fragment.DetailFragment;
@@ -23,12 +23,12 @@ public class DetailActivity extends BaseActivity {
         Fragment fragment = new DetailFragment();
 
         if (savedInstanceState != null){
-            fragment = getFragmentManager().findFragmentByTag(DetailFragment.class.getName());
+            fragment = getSupportFragmentManager().findFragmentByTag(DetailFragment.class.getName());
         } else {
             fragment.setArguments(userData.getExtras());
         }
 
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fl_detail_fragment_holder, fragment, DetailFragment.class.getName())
                 .commit();
     }
