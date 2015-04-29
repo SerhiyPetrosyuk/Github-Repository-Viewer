@@ -27,4 +27,13 @@ dependencies {
     compile 'com.google.dagger:dagger:2.+'
     apt 'com.google.dagger:dagger-compiler:2.+'
     provided 'org.glassfish:javax.annotation:10.0-b28'
+
+    // Mockito
+    androidTestCompile 'org.mockito:mockito-core:1.10.19'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.0'
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.0'
+
+    // Junit
+    androidTestCompile 'junit:junit:4.12'
+
 }
