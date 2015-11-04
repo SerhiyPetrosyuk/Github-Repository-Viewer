@@ -3,6 +3,7 @@ package com.mlsdev.serhiy.domain.interactor.abstraction;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Serhiy Petrosyuk on 17.04.15.
@@ -20,9 +21,9 @@ public interface SearchRepositoryUseCase {
     /**
      * Execute this use case
      *
-     * @param repositoriesUrl The repositories url is for the retrieving data;
+     * @param userName The user's name is for the retrieving data;
      * @param callback {@link Callback} is for notifying a client.
      */
-    public void execute(String repositoriesUrl, Callback callback);
+    void execute(String userName, final InteractorCallback<List<GithubRepository>> callback);
 
 }

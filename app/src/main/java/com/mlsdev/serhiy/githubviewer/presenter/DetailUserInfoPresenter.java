@@ -3,6 +3,7 @@ package com.mlsdev.serhiy.githubviewer.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,7 +11,7 @@ import android.support.annotation.NonNull;
 import com.facebook.share.model.ShareLinkContent;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowersUseCase;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowingsUseCase;
-import com.mlsdev.serhiy.domain.interactor.abstraction.LoadAvatarUseCase;
+import com.mlsdev.serhiy.domain.interactor.abstraction.InteractorCallback;
 import com.mlsdev.serhiy.domain.interactor.abstraction.SearchRepositoryUseCase;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.githubviewer.R;
@@ -18,9 +19,9 @@ import com.mlsdev.serhiy.githubviewer.model.RepositoryModel;
 import com.mlsdev.serhiy.githubviewer.model.mapper.RepositoryDataMapper;
 import com.mlsdev.serhiy.githubviewer.view.DetailView;
 import com.mlsdev.serhiy.githubviewer.view.adapter.RepositoryListAdapter;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,7 +30,6 @@ import javax.inject.Singleton;
 import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_AVATAR;
 import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_NAME;
 import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_PROFILE;
-import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_REPOS;
 
 /**
  * Created by Serhiy Petrosyuk on 20.04.15.
@@ -38,30 +38,27 @@ import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA
 @Singleton
 public class DetailUserInfoPresenter implements DetailPresenter {
 
-    private Bundle     mUserData;
+    private Bundle mUserData;
     private DetailView mView;
 
     /*   dependencies   */
-    private GetFollowersUseCase     mFollowersUseCase;
-    private GetFollowingsUseCase    mFollowingsUseCase;
+    private GetFollowersUseCase mFollowersUseCase;
+    private GetFollowingsUseCase mFollowingsUseCase;
     private SearchRepositoryUseCase mRepositoryUseCase;
-    private LoadAvatarUseCase       mLoadAvatarUseCase;
-    private RepositoryDataMapper    mRepositoryDataMapper;
-    private RepositoryListAdapter   mRepositoryListAdapter;
+    private RepositoryDataMapper mRepositoryDataMapper;
+    private RepositoryListAdapter mRepositoryListAdapter;
     Context mContext;
 
     @Inject
     public DetailUserInfoPresenter(GetFollowersUseCase mFollowersUseCase,
                                    GetFollowingsUseCase mFollowingsUseCase,
                                    SearchRepositoryUseCase mRepositoryUseCase,
-                                   LoadAvatarUseCase mLoadAvatarUseCase,
                                    RepositoryDataMapper repositoryDataMapper,
-                                   RepositoryListAdapter   repositoryListAdapter,
+                                   RepositoryListAdapter repositoryListAdapter,
                                    Context context) {
         this.mFollowersUseCase = mFollowersUseCase;
         this.mFollowingsUseCase = mFollowingsUseCase;
         this.mRepositoryUseCase = mRepositoryUseCase;
-        this.mLoadAvatarUseCase = mLoadAvatarUseCase;
         this.mRepositoryDataMapper = repositoryDataMapper;
         this.mRepositoryListAdapter = repositoryListAdapter;
         this.mContext = context;
@@ -77,7 +74,6 @@ public class DetailUserInfoPresenter implements DetailPresenter {
 
     }
 
-
     @Override
     public void setDetailView(@NonNull DetailView detailView) {
         mView = detailView;
@@ -90,14 +86,31 @@ public class DetailUserInfoPresenter implements DetailPresenter {
 
     @Override
     public void searchRepositories() {
-        String repositoriesUrl = mUserData.getString(EXTRA_USER_REPOS, "");
-        mRepositoryUseCase.execute(repositoriesUrl, mSerachRepositoriesCallback);
+        String userName = mUserData.getString(EXTRA_USER_NAME, "");
+        mRepositoryUseCase.execute(userName, mSerachRepositoriesCallback);
     }
 
     @Override
     public void loadUserAvatar() {
         String imageUrl = mUserData.getString(EXTRA_USER_AVATAR, "");
-        mLoadAvatarUseCase.execute(imageUrl, mLoadAvatarCallback);
+        Target imageTarget = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                mView.setupUserAvatar(bitmap);
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+
+        Picasso.with(mContext).load(imageUrl).into(imageTarget);
     }
 
     @Override
@@ -128,64 +141,50 @@ public class DetailUserInfoPresenter implements DetailPresenter {
                 .setImageUrl(userAvatar)
                 .setContentTitle(username)
                 .build();
-
         mView.share(content);
     }
 
-    private String getUsername(){
+    private String getUsername() {
         return mUserData.getString(EXTRA_USER_NAME, "");
     }
 
-    private LoadAvatarUseCase.Callback mLoadAvatarCallback = new LoadAvatarUseCase.Callback() {
+    private InteractorCallback<Integer> mGetFollowersCallback = new InteractorCallback<Integer>() {
         @Override
-        public void onLoadImageSuccess(Bitmap bitmap) {
-            mView.setupUserAvatar(bitmap);
-        }
-
-        @Override
-        public void onError() {
-
-        }
-    };
-
-    private GetFollowersUseCase.Callback mGetFollowersCallback = new GetFollowersUseCase.Callback() {
-        @Override
-        public void onFollowersLoaded(Integer followersNumber) {
+        public void onSuccess(Integer followersNumber) {
             String followersStr = mContext.getString(R.string.followers, followersNumber);
             mView.setFollowers(followersStr);
         }
 
         @Override
-        public void onError() {
-            mView.showError(mContext.getString(R.string.load_followers_error));
+        public void onError(String errorMessage) {
+            mView.showError(errorMessage);
         }
     };
 
-    private GetFollowingsUseCase.Callback mGetFollowingsCallback = new GetFollowingsUseCase.Callback() {
+    private InteractorCallback<Integer> mGetFollowingsCallback = new InteractorCallback<Integer>() {
         @Override
-        public void onFollowingsLoaded(Integer followingsNumber) {
+        public void onSuccess(Integer followingsNumber) {
             String followingsString = mContext.getString(R.string.followings, followingsNumber);
             mView.setFollowings(followingsString);
         }
 
         @Override
-        public void onError() {
-            mView.showError(mContext.getString(R.string.load_followings_error));
+        public void onError(String errorMessage) {
+            mView.showError(errorMessage);
         }
     };
 
-    private SearchRepositoryUseCase.Callback mSerachRepositoriesCallback = new SearchRepositoryUseCase.Callback() {
+    private InteractorCallback<List<GithubRepository>> mSerachRepositoriesCallback = new InteractorCallback<List<GithubRepository>>() {
         @Override
-        public void onUserDataLoaded(Collection<GithubRepository> repositories) {
-            Collection<RepositoryModel> repositoryModels = mRepositoryDataMapper.transformRepositoryCollectionData(repositories);
-            List<RepositoryModel> repositoryModelsList = new ArrayList<>(repositoryModels);
-            mRepositoryListAdapter.setData(repositoryModelsList);
+        public void onSuccess(List<GithubRepository> data) {
+            List<RepositoryModel> repositoryModels = mRepositoryDataMapper.transformRepositoryCollectionData(data);
+            mRepositoryListAdapter.setData(repositoryModels);
             mView.setListAdapter(mRepositoryListAdapter);
         }
 
         @Override
-        public void onError() {
-            mView.stopRepositoryLoading();
+        public void onError(String errorMessage) {
+            mView.showError(errorMessage);
         }
     };
 

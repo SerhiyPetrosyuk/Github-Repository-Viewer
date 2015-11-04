@@ -1,6 +1,7 @@
 package com.mlsdev.serhiy.data;
 
 import com.mlsdev.serhiy.data.entity.mapper.EntityJsonMapper;
+import com.mlsdev.serhiy.data.entity.repository.RepositoryEntity;
 import com.mlsdev.serhiy.data.entity.user.Item;
 
 import junit.framework.TestCase;
@@ -149,7 +150,7 @@ public class JsonToEntityMapperTest extends TestCase {
 
     @Test
     public void testTransformRepository(){
-        Collection<com.mlsdev.serhiy.data.entity.repository.Item> repositoryEntities;
+        Collection<RepositoryEntity> repositoryEntities;
         repositoryEntities = jsonMapper.transformRepositoryCollection(repositoryJson);
 
         assertTrue(repositoryEntities.size() > 0);

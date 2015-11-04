@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.mlsdev.serhiy.domain.interactor.abstraction.InteractorCallback;
 import com.mlsdev.serhiy.domain.interactor.abstraction.SearchUserUseCase;
 import com.mlsdev.serhiy.domain.model.GithubUser;
 import com.mlsdev.serhiy.githubviewer.view.SearchView;
@@ -55,9 +56,9 @@ public class SearchUserPresenter implements SearchPresenter {
 
     }
 
-    private SearchUserUseCase.Callback callback = new SearchUserUseCase.Callback() {
+    private InteractorCallback<GithubUser> callback = new InteractorCallback<GithubUser>() {
         @Override
-        public void onUserDataLoaded(GithubUser githubUser) {
+        public void onSuccess(GithubUser githubUser) {
             Intent userData = new Intent(context, DetailActivity.class);
             userData.putExtra(EXTRA_USER_NAME, githubUser.getUserName());
             userData.putExtra(EXTRA_USER_PROFILE, githubUser.getUserProfileLink());
@@ -67,7 +68,7 @@ public class SearchUserPresenter implements SearchPresenter {
         }
 
         @Override
-        public void onError() {
+        public void onError(String errorMessage) {
             mSearchView.onStopSearch();
             mSearchView.onSearchError();
         }

@@ -1,6 +1,7 @@
 package com.mlsdev.serhiy.domain.interactor.implementation;
 
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowersUseCase;
+import com.mlsdev.serhiy.domain.interactor.abstraction.InteractorCallback;
 import com.mlsdev.serhiy.domain.repository.GithubUserRepository;
 
 import javax.inject.Inject;
@@ -9,9 +10,7 @@ import javax.inject.Inject;
  * Created by Serhiy Petrosyuk on 17.04.15.
  */
 public class GetFollowersUseCaseImpl implements GetFollowersUseCase {
-
     private GithubUserRepository mRepository;
-    private Callback mCallback;
 
     @Inject
     public GetFollowersUseCaseImpl(GithubUserRepository repository) {
@@ -19,20 +18,18 @@ public class GetFollowersUseCaseImpl implements GetFollowersUseCase {
     }
 
     @Override
-    public void execute(String userName, Callback callback) {
-        mCallback = callback;
-        mRepository.getFollowersNumber(userName, mFollowersCallback);
+    public void execute(String userName, final InteractorCallback<Integer> callback) {
+        mRepository.getFollowersNumber(userName, new GithubUserRepository.RepositoryCallBack<Integer>() {
+            @Override
+            public void onSuccess(Integer followers) {
+                callback.onSuccess(followers);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                callback.onError(errorMessage);
+            }
+        });
     }
 
-    private GithubUserRepository.FollowersCallback mFollowersCallback = new GithubUserRepository.FollowersCallback() {
-        @Override
-        public void onFollowersLoaded(Integer followersNumber) {
-            mCallback.onFollowersLoaded(followersNumber);
-        }
-
-        @Override
-        public void onError() {
-            mCallback.onError();
-        }
-    };
 }

@@ -19,8 +19,8 @@ public interface SearchUserUseCase {
      * Execute this use case
      *
      * @param searchedName The searched name is for the searching and retrieving data;
-     * @param callback {@link Callback} is for notifying a client.
+     * @param callback {@link InteractorCallback} is for notifying a client.
      */
-    public void execute(String searchedName, Callback callback);
+    void execute(String searchedName, InteractorCallback<GithubUser> callback);
 
 }

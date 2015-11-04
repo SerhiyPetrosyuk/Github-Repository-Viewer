@@ -15,6 +15,7 @@ public class SearchUserResult {
     @SerializedName("incomplete_results")
     @Expose
     private Boolean incompleteResults;
+    @SerializedName("items")
     @Expose
     private List<Item> items = new ArrayList<Item>();
 
