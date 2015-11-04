@@ -3,6 +3,7 @@ package com.mlsdev.serhiy.githubviewer.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +12,6 @@ import com.facebook.share.model.ShareLinkContent;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowersUseCase;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowingsUseCase;
 import com.mlsdev.serhiy.domain.interactor.abstraction.InteractorCallback;
-import com.mlsdev.serhiy.domain.interactor.abstraction.LoadAvatarUseCase;
 import com.mlsdev.serhiy.domain.interactor.abstraction.SearchRepositoryUseCase;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.githubviewer.R;
@@ -19,6 +19,8 @@ import com.mlsdev.serhiy.githubviewer.model.RepositoryModel;
 import com.mlsdev.serhiy.githubviewer.model.mapper.RepositoryDataMapper;
 import com.mlsdev.serhiy.githubviewer.view.DetailView;
 import com.mlsdev.serhiy.githubviewer.view.adapter.RepositoryListAdapter;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -43,7 +45,6 @@ public class DetailUserInfoPresenter implements DetailPresenter {
     private GetFollowersUseCase mFollowersUseCase;
     private GetFollowingsUseCase mFollowingsUseCase;
     private SearchRepositoryUseCase mRepositoryUseCase;
-    private LoadAvatarUseCase mLoadAvatarUseCase;
     private RepositoryDataMapper mRepositoryDataMapper;
     private RepositoryListAdapter mRepositoryListAdapter;
     Context mContext;
@@ -52,14 +53,12 @@ public class DetailUserInfoPresenter implements DetailPresenter {
     public DetailUserInfoPresenter(GetFollowersUseCase mFollowersUseCase,
                                    GetFollowingsUseCase mFollowingsUseCase,
                                    SearchRepositoryUseCase mRepositoryUseCase,
-                                   LoadAvatarUseCase mLoadAvatarUseCase,
                                    RepositoryDataMapper repositoryDataMapper,
                                    RepositoryListAdapter repositoryListAdapter,
                                    Context context) {
         this.mFollowersUseCase = mFollowersUseCase;
         this.mFollowingsUseCase = mFollowingsUseCase;
         this.mRepositoryUseCase = mRepositoryUseCase;
-        this.mLoadAvatarUseCase = mLoadAvatarUseCase;
         this.mRepositoryDataMapper = repositoryDataMapper;
         this.mRepositoryListAdapter = repositoryListAdapter;
         this.mContext = context;
@@ -94,7 +93,24 @@ public class DetailUserInfoPresenter implements DetailPresenter {
     @Override
     public void loadUserAvatar() {
         String imageUrl = mUserData.getString(EXTRA_USER_AVATAR, "");
-        mLoadAvatarUseCase.execute(imageUrl, mLoadAvatarCallback);
+        Target imageTarget = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                mView.setupUserAvatar(bitmap);
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+
+        Picasso.with(mContext).load(imageUrl).into(imageTarget);
     }
 
     @Override
@@ -125,25 +141,12 @@ public class DetailUserInfoPresenter implements DetailPresenter {
                 .setImageUrl(userAvatar)
                 .setContentTitle(username)
                 .build();
-
         mView.share(content);
     }
 
     private String getUsername() {
         return mUserData.getString(EXTRA_USER_NAME, "");
     }
-
-    private LoadAvatarUseCase.Callback mLoadAvatarCallback = new LoadAvatarUseCase.Callback() {
-        @Override
-        public void onLoadImageSuccess(Bitmap bitmap) {
-            mView.setupUserAvatar(bitmap);
-        }
-
-        @Override
-        public void onError() {
-
-        }
-    };
 
     private InteractorCallback<Integer> mGetFollowersCallback = new InteractorCallback<Integer>() {
         @Override

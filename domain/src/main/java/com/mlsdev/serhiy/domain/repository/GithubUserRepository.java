@@ -4,8 +4,6 @@ package com.mlsdev.serhiy.domain.repository;
  * Created by Serhiy Petrosyuk on 17.04.15.
  */
 
-import android.graphics.Bitmap;
-
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.domain.model.GithubUser;
 
@@ -20,15 +18,6 @@ public interface GithubUserRepository {
         void onSuccess(T data);
 
         void onError(String errorMessage);
-    }
-
-    /**
-     * Callback to be notified when either user's avatar has been loaded or an error happened.
-     */
-    public interface LoadAvatarCallback {
-        void onAvatarLoaded(Bitmap bitmap);
-
-        void onError();
     }
 
     /**
@@ -62,13 +51,5 @@ public interface GithubUserRepository {
      * @param callback A {@link RepositoryCallBack} is for notifying a client.
      */
     public void getFollowingsNumber(String userName, RepositoryCallBack<Integer> callback);
-
-    /**
-     * Load a user's avatar by a url
-     *
-     * @param url            The url is used to load an avatar from the network or cache;
-     * @param avatarCallback A {@link LoadAvatarCallback} is for notifying a client
-     */
-    public void loadUserAvatar(String url, LoadAvatarCallback avatarCallback);
 
 }

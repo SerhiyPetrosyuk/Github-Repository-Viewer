@@ -1,9 +1,6 @@
 package com.mlsdev.serhiy.data.repository;
 
-import android.graphics.Bitmap;
-
 import com.mlsdev.serhiy.data.net.GitApiService;
-import com.mlsdev.serhiy.data.net.RestApi;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.domain.model.GithubUser;
 import com.mlsdev.serhiy.domain.repository.GithubUserRepository;
@@ -18,15 +15,10 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class GithubRepositoryImpl implements GithubUserRepository {
-    private RestApi mRestApi;
     private GitApiService mGitApiService;
 
-    /*   Callbacks   */
-    private LoadAvatarCallback loadAvatarCallback;
-
     @Inject
-    public GithubRepositoryImpl(RestApi restApi, GitApiService gitApiService) {
-        mRestApi = restApi;
+    public GithubRepositoryImpl(GitApiService gitApiService) {
         mGitApiService = gitApiService;
     }
 
@@ -92,24 +84,5 @@ public class GithubRepositoryImpl implements GithubUserRepository {
             }
         });
     }
-
-    @Override
-    public void loadUserAvatar(String url, LoadAvatarCallback avatarCallback) {
-        loadAvatarCallback = avatarCallback;
-        mRestApi.loadAvatarRequest(url, loadAvatarRequestCallback);
-    }
-
-    private RestApi.LoadAvatarRequestCallback loadAvatarRequestCallback = new RestApi.LoadAvatarRequestCallback() {
-        @Override
-        public void onRequestSuccess(Bitmap bitmap) {
-            loadAvatarCallback.onAvatarLoaded(bitmap);
-        }
-
-        @Override
-        public void onError() {
-            loadAvatarCallback.onError();
-        }
-    };
-
 
 }
