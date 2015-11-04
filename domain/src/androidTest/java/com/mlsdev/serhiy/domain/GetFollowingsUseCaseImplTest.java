@@ -3,6 +3,7 @@ package com.mlsdev.serhiy.domain;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowingsUseCase;
 import com.mlsdev.serhiy.domain.interactor.implementation.GetFollowingsUseCaseImpl;
 import com.mlsdev.serhiy.domain.repository.GithubUserRepository;
+import com.mlsdev.serhiy.domain.repository.GithubUserRepository.RepositoryCallBack;
 
 import junit.framework.TestCase;
 
@@ -13,7 +14,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static com.mlsdev.serhiy.domain.repository.GithubUserRepository.FollowingsCallback;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
@@ -24,7 +24,7 @@ public class GetFollowingsUseCaseImplTest extends TestCase {
     private GetFollowingsUseCase mGetFollowersUseCase;
 
     @Mock private GithubUserRepository mockRepository;
-    @Mock private FollowingsCallback mockFollowingsCallback;
+    @Mock private RepositoryCallBack<Integer> mockFollowingsCallback;
 
     @Before
     public void setUp() throws Exception {
@@ -47,8 +47,8 @@ public class GetFollowingsUseCaseImplTest extends TestCase {
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
-                FollowingsCallback followersCallback = (FollowingsCallback) invocation.getArguments()[0];
-                followersCallback.onFollowingsLoaded(followers);
+                RepositoryCallBack<Integer> callBack = (RepositoryCallBack<Integer>) invocation.getArguments()[0];
+                callBack.onSuccess(followers);
                 return null;
             }
         }).when(mockRepository).getFollowingsNumber(username, mockFollowingsCallback);
@@ -59,8 +59,8 @@ public class GetFollowingsUseCaseImplTest extends TestCase {
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
-                FollowingsCallback followersCallback = (FollowingsCallback) invocation.getArguments()[0];
-                followersCallback.onError();
+                RepositoryCallBack<Integer> callBack = (RepositoryCallBack<Integer>) invocation.getArguments()[0];
+                callBack.onError("error");
                 return null;
             }
         }).when(mockRepository).getFollowingsNumber(username, mockFollowingsCallback);

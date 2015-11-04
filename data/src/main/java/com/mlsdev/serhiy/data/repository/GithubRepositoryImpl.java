@@ -18,14 +18,11 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class GithubRepositoryImpl implements GithubUserRepository {
-
     private RestApi mRestApi;
     private GitApiService mGitApiService;
 
     /*   Callbacks   */
-    private LoadAvatarCallback       loadAvatarCallback;
-    private FollowersCallback        followersCallback;
-    private FollowingsCallback       followingsCallback;
+    private LoadAvatarCallback loadAvatarCallback;
 
     @Inject
     public GithubRepositoryImpl(RestApi restApi, GitApiService gitApiService) {
@@ -67,15 +64,33 @@ public class GithubRepositoryImpl implements GithubUserRepository {
     }
 
     @Override
-    public void getFollowersNumber(String userName, FollowersCallback callback) {
-        followersCallback = callback;
-        mRestApi.getFollowersNumber(userName, followersRequestCallback);
+    public void getFollowersNumber(String userName, final RepositoryCallBack<Integer> callback) {
+        mGitApiService.getFollowers(userName, new GitApiService.ApiCallback<Integer>() {
+            @Override
+            public void onSuccess(Integer followers) {
+                callback.onSuccess(followers);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                callback.onError(errorMessage);
+            }
+        });
     }
 
     @Override
-    public void getFollowingsNumber(String userName, FollowingsCallback callback) {
-        followingsCallback = callback;
-        mRestApi.getFollowingsNumber(userName, followingsRequestCallback);
+    public void getFollowingsNumber(String userName, final RepositoryCallBack<Integer> callback) {
+        mGitApiService.getFollowings(userName, new GitApiService.ApiCallback<Integer>() {
+            @Override
+            public void onSuccess(Integer followings) {
+                callback.onSuccess(followings);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                callback.onError(errorMessage);
+            }
+        });
     }
 
     @Override
@@ -95,32 +110,6 @@ public class GithubRepositoryImpl implements GithubUserRepository {
             loadAvatarCallback.onError();
         }
     };
-
-    private RestApi.GetFollowersRequestCallback followersRequestCallback = new RestApi.GetFollowersRequestCallback() {
-        @Override
-        public void onGetFollowersSuccess(Integer followersNumber) {
-            followersCallback.onFollowersLoaded(followersNumber);
-        }
-
-        @Override
-        public void onError() {
-            followersCallback.onError();
-        }
-    };
-
-    private RestApi.GetFollowingsRequestCallback followingsRequestCallback = new RestApi.GetFollowingsRequestCallback() {
-        @Override
-        public void onGetFollowingsSuccess(Integer followingsNumber) {
-            followingsCallback.onFollowingsLoaded(followingsNumber);
-        }
-
-        @Override
-        public void onError() {
-            followingsCallback.onError();
-        }
-    };
-
-    // NEW //
 
 
 }

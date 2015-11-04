@@ -36,16 +36,16 @@ import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA
 @Singleton
 public class DetailUserInfoPresenter implements DetailPresenter {
 
-    private Bundle     mUserData;
+    private Bundle mUserData;
     private DetailView mView;
 
     /*   dependencies   */
-    private GetFollowersUseCase     mFollowersUseCase;
-    private GetFollowingsUseCase    mFollowingsUseCase;
+    private GetFollowersUseCase mFollowersUseCase;
+    private GetFollowingsUseCase mFollowingsUseCase;
     private SearchRepositoryUseCase mRepositoryUseCase;
-    private LoadAvatarUseCase       mLoadAvatarUseCase;
-    private RepositoryDataMapper    mRepositoryDataMapper;
-    private RepositoryListAdapter   mRepositoryListAdapter;
+    private LoadAvatarUseCase mLoadAvatarUseCase;
+    private RepositoryDataMapper mRepositoryDataMapper;
+    private RepositoryListAdapter mRepositoryListAdapter;
     Context mContext;
 
     @Inject
@@ -54,7 +54,7 @@ public class DetailUserInfoPresenter implements DetailPresenter {
                                    SearchRepositoryUseCase mRepositoryUseCase,
                                    LoadAvatarUseCase mLoadAvatarUseCase,
                                    RepositoryDataMapper repositoryDataMapper,
-                                   RepositoryListAdapter   repositoryListAdapter,
+                                   RepositoryListAdapter repositoryListAdapter,
                                    Context context) {
         this.mFollowersUseCase = mFollowersUseCase;
         this.mFollowingsUseCase = mFollowingsUseCase;
@@ -129,7 +129,7 @@ public class DetailUserInfoPresenter implements DetailPresenter {
         mView.share(content);
     }
 
-    private String getUsername(){
+    private String getUsername() {
         return mUserData.getString(EXTRA_USER_NAME, "");
     }
 
@@ -145,29 +145,29 @@ public class DetailUserInfoPresenter implements DetailPresenter {
         }
     };
 
-    private GetFollowersUseCase.Callback mGetFollowersCallback = new GetFollowersUseCase.Callback() {
+    private InteractorCallback<Integer> mGetFollowersCallback = new InteractorCallback<Integer>() {
         @Override
-        public void onFollowersLoaded(Integer followersNumber) {
+        public void onSuccess(Integer followersNumber) {
             String followersStr = mContext.getString(R.string.followers, followersNumber);
             mView.setFollowers(followersStr);
         }
 
         @Override
-        public void onError() {
-            mView.showError(mContext.getString(R.string.load_followers_error));
+        public void onError(String errorMessage) {
+            mView.showError(errorMessage);
         }
     };
 
-    private GetFollowingsUseCase.Callback mGetFollowingsCallback = new GetFollowingsUseCase.Callback() {
+    private InteractorCallback<Integer> mGetFollowingsCallback = new InteractorCallback<Integer>() {
         @Override
-        public void onFollowingsLoaded(Integer followingsNumber) {
+        public void onSuccess(Integer followingsNumber) {
             String followingsString = mContext.getString(R.string.followings, followingsNumber);
             mView.setFollowings(followingsString);
         }
 
         @Override
-        public void onError() {
-            mView.showError(mContext.getString(R.string.load_followings_error));
+        public void onError(String errorMessage) {
+            mView.showError(errorMessage);
         }
     };
 

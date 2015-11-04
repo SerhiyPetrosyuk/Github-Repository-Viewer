@@ -11,6 +11,7 @@ import java.util.List;
 public interface GitApiService {
     interface ApiCallback<T> {
         void onSuccess(T data);
+
         void onError(String errorMessage);
     }
 
@@ -18,4 +19,7 @@ public interface GitApiService {
 
     void getRepositories(String userName, final ApiCallback<List<GithubRepository>> callback);
 
+    void getFollowers(String userName, final ApiCallback<Integer> callback);
+
+    void getFollowings(String userName, final ApiCallback<Integer> callback);
 }

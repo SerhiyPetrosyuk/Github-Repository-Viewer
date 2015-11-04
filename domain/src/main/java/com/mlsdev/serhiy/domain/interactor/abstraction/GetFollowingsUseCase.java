@@ -19,6 +19,6 @@ public interface GetFollowingsUseCase {
      * @param userName The username is for the searching and retrieving user's followings;
      * @param callback {@link Callback} is for notifying a client.
      */
-    public void execute(String userName, Callback callback);
+    public void execute(String userName, InteractorCallback<Integer> callback);
 
 }

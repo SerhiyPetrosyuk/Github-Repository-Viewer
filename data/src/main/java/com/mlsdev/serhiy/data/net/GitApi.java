@@ -1,5 +1,7 @@
 package com.mlsdev.serhiy.data.net;
 
+import com.mlsdev.serhiy.data.entity.follows.Followers;
+import com.mlsdev.serhiy.data.entity.follows.Following;
 import com.mlsdev.serhiy.data.entity.repository.RepositoryEntity;
 import com.mlsdev.serhiy.data.entity.user.SearchUserResult;
 
@@ -18,6 +20,8 @@ public interface GitApi {
     String USERS = "users";
     String REPOS = "repos";
     String SEARCH = "search";
+    String FOLLOWERS = "followers";
+    String FOLLOWINGS = "following";
     String SEARCH_QUERY = "q";
     String USER_NAME_PATH = "userName";
 
@@ -27,4 +31,9 @@ public interface GitApi {
     @GET(USERS + "/{" + USER_NAME_PATH + "}/" + REPOS)
     Call<List<RepositoryEntity>> getRepositories(@Path(USER_NAME_PATH) String userName);
 
+    @GET(USERS + "/{" + USER_NAME_PATH + "}/" + FOLLOWERS)
+    Call<List<Followers>> getFollowers(@Path(USER_NAME_PATH) String userName);
+
+    @GET(USERS + "/{" + USER_NAME_PATH + "}/" + FOLLOWINGS)
+    Call<List<Following>> getFollowings(@Path(USER_NAME_PATH) String userName);
 }

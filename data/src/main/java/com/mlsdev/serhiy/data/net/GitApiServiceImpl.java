@@ -1,5 +1,7 @@
 package com.mlsdev.serhiy.data.net;
 
+import com.mlsdev.serhiy.data.entity.follows.Followers;
+import com.mlsdev.serhiy.data.entity.follows.Following;
 import com.mlsdev.serhiy.data.entity.mapper.ModelEntityMapper;
 import com.mlsdev.serhiy.data.entity.repository.RepositoryEntity;
 import com.mlsdev.serhiy.data.entity.user.SearchUserResult;
@@ -64,6 +66,38 @@ public class GitApiServiceImpl implements GitApiService {
             @Override
             public void onResponse(Response<List<RepositoryEntity>> response, Retrofit retrofit) {
                 callback.onSuccess(mapper.transformRepositoryEntities(response.body()));
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void getFollowers(String userName, final ApiCallback<Integer> callback) {
+        final Call<List<Followers>> getFollowersCall = gitApi.getFollowers(userName);
+        getFollowersCall.enqueue(new Callback<List<Followers>>() {
+            @Override
+            public void onResponse(Response<List<Followers>> response, Retrofit retrofit) {
+                callback.onSuccess(response.body().size());
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                callback.onError(t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void getFollowings(String userName, final ApiCallback<Integer> callback) {
+        final Call<List<Following>> getFollowingsCall = gitApi.getFollowings(userName);
+        getFollowingsCall.enqueue(new Callback<List<Following>>() {
+            @Override
+            public void onResponse(Response<List<Following>> response, Retrofit retrofit) {
+                callback.onSuccess(response.body().size());
             }
 
             @Override

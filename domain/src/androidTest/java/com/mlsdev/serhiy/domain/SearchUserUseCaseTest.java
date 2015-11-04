@@ -4,6 +4,7 @@ import com.mlsdev.serhiy.domain.interactor.abstraction.SearchUserUseCase;
 import com.mlsdev.serhiy.domain.interactor.implementation.SearchUserUseCaseImpl;
 import com.mlsdev.serhiy.domain.model.GithubUser;
 import com.mlsdev.serhiy.domain.repository.GithubUserRepository;
+import com.mlsdev.serhiy.domain.repository.GithubUserRepository.RepositoryCallBack;
 
 import junit.framework.TestCase;
 
@@ -14,7 +15,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static com.mlsdev.serhiy.domain.repository.GithubUserRepository.GithubUserCallback;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
@@ -30,7 +30,7 @@ public class SearchUserUseCaseTest extends TestCase {
     @Mock
     private GithubUserRepository mockRepository;
     @Mock
-    private GithubUserRepository.RepositoryCallBack<GithubUser> mockUserCallback;
+    private RepositoryCallBack<GithubUser> mockUserCallback;
 
     @Before
     public void setUp() {
@@ -53,8 +53,8 @@ public class SearchUserUseCaseTest extends TestCase {
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                GithubUserCallback githubUserCallback = (GithubUserCallback) invocation.getArguments()[0];
-                githubUserCallback.onUserLoaded(any(GithubUser.class));
+                RepositoryCallBack<GithubUser> githubUserCallback = (RepositoryCallBack) invocation.getArguments()[0];
+                githubUserCallback.onSuccess(any(GithubUser.class));
                 return null;
             }
         }).when(mockRepository).searchGithubUserByName(username, mockUserCallback);
@@ -65,8 +65,8 @@ public class SearchUserUseCaseTest extends TestCase {
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                GithubUserCallback githubUserCallback = (GithubUserCallback) invocation.getArguments()[0];
-                githubUserCallback.onError();
+                RepositoryCallBack<GithubUser> githubUserCallback = (RepositoryCallBack) invocation.getArguments()[0];
+                githubUserCallback.onError("error");
                 return null;
             }
         }).when(mockRepository).searchGithubUserByName(username, mockUserCallback);
