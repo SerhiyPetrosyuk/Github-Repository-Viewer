@@ -1,5 +1,7 @@
 package com.mlsdev.serhiy.githubviewer.internal.di.modules;
 
+import com.mlsdev.serhiy.data.net.GitApiService;
+import com.mlsdev.serhiy.data.net.GitApiServiceImpl;
 import com.mlsdev.serhiy.data.net.RestApi;
 import com.mlsdev.serhiy.data.net.RestApiImpl;
 
@@ -18,6 +20,11 @@ public class NetModule {
     @Provides @Singleton
     RestApi provideRestApi(RestApiImpl restApi){
         return restApi;
+    }
+
+    @Provides
+    GitApiService provideGitApiService(GitApiServiceImpl gitApiService) {
+        return gitApiService;
     }
 
 }

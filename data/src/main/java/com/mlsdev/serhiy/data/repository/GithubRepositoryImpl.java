@@ -2,8 +2,7 @@ package com.mlsdev.serhiy.data.repository;
 
 import android.graphics.Bitmap;
 
-import com.mlsdev.serhiy.data.entity.mapper.EntityJsonMapper;
-import com.mlsdev.serhiy.data.entity.mapper.ModelEntityMapper;
+import com.mlsdev.serhiy.data.net.GitApiService;
 import com.mlsdev.serhiy.data.net.RestApi;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.domain.model.GithubUser;
@@ -20,29 +19,34 @@ import javax.inject.Singleton;
 @Singleton
 public class GithubRepositoryImpl implements GithubUserRepository {
 
-    private EntityJsonMapper  mJsonMapper;
-    private ModelEntityMapper mModelEntityMapper;
     private RestApi mRestApi;
+    private GitApiService mGitApiService;
 
     /*   Callbacks   */
-    private GithubUserCallback       githubUserCallback;
     private GithubRepositoryCallback githubRepositoryCallback;
     private LoadAvatarCallback       loadAvatarCallback;
     private FollowersCallback        followersCallback;
     private FollowingsCallback       followingsCallback;
 
     @Inject
-    public GithubRepositoryImpl(EntityJsonMapper jsonMapper, ModelEntityMapper modelEntityMapper,
-                                RestApi restApi) {
-        mJsonMapper = jsonMapper;
+    public GithubRepositoryImpl(RestApi restApi, GitApiService gitApiService) {
         mRestApi = restApi;
-        mModelEntityMapper = modelEntityMapper;
+        mGitApiService = gitApiService;
     }
 
     @Override
-    public void searchGithubUserByName(String searchedName, GithubUserCallback callback) {
-        githubUserCallback = callback;
-        mRestApi.searchUserRequest(searchedName, userRequestCallback);
+    public void searchGithubUserByName(String searchedName, final RepositoryCallBack<GithubUser> callback) {
+        mGitApiService.searchUser(searchedName, new GitApiService.ApiCallback<GithubUser>() {
+            @Override
+            public void onSuccess(GithubUser data) {
+                callback.onSuccess(data);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                callback.onError(errorMessage);
+            }
+        });
     }
 
     @Override
@@ -68,21 +72,6 @@ public class GithubRepositoryImpl implements GithubUserRepository {
         loadAvatarCallback = avatarCallback;
         mRestApi.loadAvatarRequest(url, loadAvatarRequestCallback);
     }
-
-    private RestApi.SearchUserRequestCallback userRequestCallback = new RestApi.SearchUserRequestCallback() {
-        @Override
-        public void onRequestSuccess(GithubUser githubUser) {
-            if (githubUser != null)
-                githubUserCallback.onUserLoaded(githubUser);
-            else
-                githubUserCallback.onError();
-        }
-
-        @Override
-        public void onError() {
-            githubUserCallback.onError();
-        }
-    };
 
     private RestApi.SearchRepositoriesRequestCallback repositoriesRequestCallback = new RestApi.SearchRepositoriesRequestCallback() {
         @Override
@@ -131,5 +120,8 @@ public class GithubRepositoryImpl implements GithubUserRepository {
             followingsCallback.onError();
         }
     };
+
+    // NEW //
+
 
 }

@@ -16,6 +16,11 @@ import java.util.Collection;
  */
 public interface GithubUserRepository {
 
+    interface RepositoryCallBack<T>{
+        void onSuccess(T data);
+        void onError(String errorMessage);
+    }
+
     /**
      * Callback to be notified when either user has been loaded or an error happened.
      * */
@@ -62,7 +67,7 @@ public interface GithubUserRepository {
      * @param searchedName The searched name is for the searching and retrieving data;
      * @param callback A {@link GithubUserCallback} is for notifying a client.
      * */
-    public void searchGithubUserByName(String searchedName, GithubUserCallback callback);
+    public void searchGithubUserByName(String searchedName, RepositoryCallBack<GithubUser> callback);
 
     /**
      * Search a collection of {@link GithubUserRepository}.

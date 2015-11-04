@@ -30,7 +30,7 @@ public class SearchUserUseCaseTest extends TestCase {
     @Mock
     private GithubUserRepository mockRepository;
     @Mock
-    private GithubUserCallback mockUserCallback;
+    private GithubUserRepository.RepositoryCallBack<GithubUser> mockUserCallback;
 
     @Before
     public void setUp() {
