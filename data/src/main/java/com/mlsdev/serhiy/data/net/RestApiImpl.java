@@ -2,21 +2,13 @@ package com.mlsdev.serhiy.data.net;
 
 import android.graphics.Bitmap;
 
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.mlsdev.serhiy.data.entity.mapper.EntityJsonMapper;
-import com.mlsdev.serhiy.data.entity.user.Item;
-import com.mlsdev.serhiy.data.net.requests.SearchRepositoryRequest;
-import com.mlsdev.serhiy.data.net.requests.SearchUserRequest;
-import com.mlsdev.serhiy.domain.model.GithubRepository;
-import com.mlsdev.serhiy.domain.model.GithubUser;
 
 import org.json.JSONArray;
-
-import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,8 +23,6 @@ public class RestApiImpl implements RestApi {
     private EntityJsonMapper mJsonMapper;
 
     // region Callbacks
-    private SearchUserRequestCallback         mUserRequestCallback;
-    private SearchRepositoriesRequestCallback mRepositoriesRequestCallback;
     private LoadAvatarRequestCallback         mAvatarRequestCallback;
     private GetFollowersRequestCallback       mFollowersRequestCallback;
     private GetFollowingsRequestCallback      mFollowingsRequestCallback;
@@ -41,56 +31,6 @@ public class RestApiImpl implements RestApi {
     @Inject
     public RestApiImpl(EntityJsonMapper jsonMapper) {
         mJsonMapper = jsonMapper;
-    }
-
-    @Override
-    public void searchUserRequest(String searchedName, SearchUserRequestCallback callback) {
-        mUserRequestCallback = callback;
-
-        String url = SEARCH_USER_BASE_URL + searchedName;
-
-        SearchUserRequest<GithubUser, Item> request;
-        request = new SearchUserRequest<>(Request.Method.GET, url,
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-                            mUserRequestCallback.onError();
-                        }
-                    },
-                    new Response.Listener<GithubUser>() {
-                        @Override
-                        public void onResponse(GithubUser githubUser) {
-                            mUserRequestCallback.onRequestSuccess(githubUser);
-                        }
-                    }
-                );
-
-        RequestExecutor.getRequestQueue().add(request);
-    }
-
-    @Override
-    public void searchRepositoriesRequest(String repositoriesUrl, SearchRepositoriesRequestCallback callback) {
-        mRepositoriesRequestCallback = callback;
-
-        SearchRepositoryRequest<GithubRepository, com.mlsdev.serhiy.data.entity.repository.Item> request;
-        request = new SearchRepositoryRequest<>(
-                Request.Method.GET,
-                repositoriesUrl,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        mRepositoriesRequestCallback.onError();
-                    }
-                },
-                new Response.Listener<Collection<GithubRepository>>() {
-                    @Override
-                    public void onResponse(Collection<GithubRepository> githubRepositories) {
-                        mRepositoriesRequestCallback.onRequestSuccess(githubRepositories);
-                    }
-                }
-            );
-
-        RequestExecutor.getRequestQueue().add(request);
     }
 
     @Override

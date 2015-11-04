@@ -4,12 +4,13 @@ package com.mlsdev.serhiy.data.entity.mapper;
  * Created by Serhiy Petrosyuk on 20.04.15.
  */
 
+import com.mlsdev.serhiy.data.entity.repository.RepositoryEntity;
 import com.mlsdev.serhiy.data.entity.user.Item;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.domain.model.GithubUser;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,30 +46,21 @@ public class ModelEntityMapper {
     }
 
     /**
-     * Transforms a {@link java.util.Collection<com.mlsdev.serhiy.data.entity.repository.Item>} into
+     * Transforms a {@link java.util.Collection<RepositoryEntity>} into
      * a {@link java.util.Collection<GithubRepository>}
-     * @param repositoryEntityCollection The collection of the {@link com.mlsdev.serhiy.data.entity.repository.Item}
+     * @param repositoryEntities The collection of the {@link RepositoryEntity}
      * @return {@link java.util.Collection<GithubRepository>}
      * */
-    public Collection<GithubRepository> transformRepositoryEntities(
-            Collection<com.mlsdev.serhiy.data.entity.repository.Item> repositoryEntityCollection){
-        Collection<GithubRepository> githubRepositoryCollection = new ArrayList<>();
-        ArrayList<com.mlsdev.serhiy.data.entity.repository.Item> repositoryEntities;
-        repositoryEntities = (ArrayList<com.mlsdev.serhiy.data.entity.repository.Item>) repositoryEntityCollection;
+    public List<GithubRepository> transformRepositoryEntities(List<RepositoryEntity> repositoryEntities){
+        List<GithubRepository> githubRepositoryCollection = new ArrayList<>();
 
-        if (repositoryEntityCollection != null){
-            for (int i = 0; i < repositoryEntityCollection.size(); i++){
-                GithubRepository githubRepository = new GithubRepository();
-                com.mlsdev.serhiy.data.entity.repository.Item repositoryEntity;
-                repositoryEntity = repositoryEntities.get(i);
-
-                githubRepository.setName(repositoryEntity.getName());
-                githubRepository.setLanguage(repositoryEntity.getLanguage());
-                githubRepository.setStarsNumber(repositoryEntity.getStargazersCount());
-                githubRepository.setForksNumber(repositoryEntity.getForksCount());
-
-                githubRepositoryCollection.add(githubRepository);
-            }
+        for (RepositoryEntity repositoryEntity : repositoryEntities) {
+            GithubRepository githubRepository = new GithubRepository();
+            githubRepository.setName(repositoryEntity.getName());
+            githubRepository.setLanguage(repositoryEntity.getLanguage());
+            githubRepository.setStarsNumber(repositoryEntity.getStargazersCount());
+            githubRepository.setForksNumber(repositoryEntity.getForksCount());
+            githubRepositoryCollection.add(githubRepository);
         }
 
         return githubRepositoryCollection;

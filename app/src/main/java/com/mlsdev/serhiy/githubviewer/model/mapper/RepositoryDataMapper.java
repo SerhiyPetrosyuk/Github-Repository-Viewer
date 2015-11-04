@@ -4,7 +4,7 @@ import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.githubviewer.model.RepositoryModel;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -26,8 +26,8 @@ public class RepositoryDataMapper {
      * a {@link RepositoryModel}.
      * @return a {@link RepositoryModel} collection.
      * */
-    public Collection<RepositoryModel> transformRepositoryCollectionData(Collection<GithubRepository> githubRepositories){
-        Collection<RepositoryModel> repositoryModels = new ArrayList<>();
+    public List<RepositoryModel> transformRepositoryCollectionData(List<GithubRepository> githubRepositories){
+        List<RepositoryModel> repositoryModels = new ArrayList<>();
 
         for (GithubRepository githubRepository : githubRepositories){
             RepositoryModel repositoryModel = new RepositoryModel();

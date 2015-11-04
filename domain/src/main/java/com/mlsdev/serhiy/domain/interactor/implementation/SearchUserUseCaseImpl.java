@@ -11,7 +11,6 @@ import javax.inject.Inject;
  * Created by Serhiy Petrosyuk on 17.04.15.
  */
 public class SearchUserUseCaseImpl implements SearchUserUseCase {
-
     private GithubUserRepository mGithubUserRepository;
 
     @Inject

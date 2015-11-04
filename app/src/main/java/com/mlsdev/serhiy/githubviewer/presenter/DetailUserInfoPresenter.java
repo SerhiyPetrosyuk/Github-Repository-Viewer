@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import com.facebook.share.model.ShareLinkContent;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowersUseCase;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowingsUseCase;
+import com.mlsdev.serhiy.domain.interactor.abstraction.InteractorCallback;
 import com.mlsdev.serhiy.domain.interactor.abstraction.LoadAvatarUseCase;
 import com.mlsdev.serhiy.domain.interactor.abstraction.SearchRepositoryUseCase;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
@@ -19,8 +20,6 @@ import com.mlsdev.serhiy.githubviewer.model.mapper.RepositoryDataMapper;
 import com.mlsdev.serhiy.githubviewer.view.DetailView;
 import com.mlsdev.serhiy.githubviewer.view.adapter.RepositoryListAdapter;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -29,7 +28,6 @@ import javax.inject.Singleton;
 import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_AVATAR;
 import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_NAME;
 import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_PROFILE;
-import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_REPOS;
 
 /**
  * Created by Serhiy Petrosyuk on 20.04.15.
@@ -77,7 +75,6 @@ public class DetailUserInfoPresenter implements DetailPresenter {
 
     }
 
-
     @Override
     public void setDetailView(@NonNull DetailView detailView) {
         mView = detailView;
@@ -90,8 +87,8 @@ public class DetailUserInfoPresenter implements DetailPresenter {
 
     @Override
     public void searchRepositories() {
-        String repositoriesUrl = mUserData.getString(EXTRA_USER_REPOS, "");
-        mRepositoryUseCase.execute(repositoriesUrl, mSerachRepositoriesCallback);
+        String userName = mUserData.getString(EXTRA_USER_NAME, "");
+        mRepositoryUseCase.execute(userName, mSerachRepositoriesCallback);
     }
 
     @Override
@@ -174,18 +171,17 @@ public class DetailUserInfoPresenter implements DetailPresenter {
         }
     };
 
-    private SearchRepositoryUseCase.Callback mSerachRepositoriesCallback = new SearchRepositoryUseCase.Callback() {
+    private InteractorCallback<List<GithubRepository>> mSerachRepositoriesCallback = new InteractorCallback<List<GithubRepository>>() {
         @Override
-        public void onUserDataLoaded(Collection<GithubRepository> repositories) {
-            Collection<RepositoryModel> repositoryModels = mRepositoryDataMapper.transformRepositoryCollectionData(repositories);
-            List<RepositoryModel> repositoryModelsList = new ArrayList<>(repositoryModels);
-            mRepositoryListAdapter.setData(repositoryModelsList);
+        public void onSuccess(List<GithubRepository> data) {
+            List<RepositoryModel> repositoryModels = mRepositoryDataMapper.transformRepositoryCollectionData(data);
+            mRepositoryListAdapter.setData(repositoryModels);
             mView.setListAdapter(mRepositoryListAdapter);
         }
 
         @Override
-        public void onError() {
-            mView.stopRepositoryLoading();
+        public void onError(String errorMessage) {
+            mView.showError(errorMessage);
         }
     };
 

@@ -1,10 +1,11 @@
 package com.mlsdev.serhiy.domain.interactor.implementation;
 
+import com.mlsdev.serhiy.domain.interactor.abstraction.InteractorCallback;
 import com.mlsdev.serhiy.domain.interactor.abstraction.SearchRepositoryUseCase;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.domain.repository.GithubUserRepository;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -12,9 +13,7 @@ import javax.inject.Inject;
  * Created by Serhiy Petrosyuk on 17.04.15.
  */
 public class SearchRepositoryUseCaseImpl implements SearchRepositoryUseCase {
-
     private GithubUserRepository mRepository;
-    private Callback mCallback;
 
     @Inject
     public SearchRepositoryUseCaseImpl(GithubUserRepository repository) {
@@ -22,20 +21,17 @@ public class SearchRepositoryUseCaseImpl implements SearchRepositoryUseCase {
     }
 
     @Override
-    public void execute(String repositoriesUrl, Callback callback) {
-        mCallback = callback;
-        mRepository.searchGithubRepositories(repositoriesUrl, mRepositoryCallback);
+    public void execute(String userName, final InteractorCallback<List<GithubRepository>> callback) {
+        mRepository.getRepositories(userName, new GithubUserRepository.RepositoryCallBack<List<GithubRepository>>() {
+            @Override
+            public void onSuccess(List<GithubRepository> repositoryList) {
+                callback.onSuccess(repositoryList);
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                callback.onError(errorMessage);
+            }
+        });
     }
-
-    private GithubUserRepository.GithubRepositoryCallback mRepositoryCallback = new GithubUserRepository.GithubRepositoryCallback() {
-        @Override
-        public void onRepositoriesLoaded(Collection<GithubRepository> githubRepositories) {
-            mCallback.onUserDataLoaded(githubRepositories);
-        }
-
-        @Override
-        public void onError() {
-            mCallback.onError();
-        }
-    };
 }

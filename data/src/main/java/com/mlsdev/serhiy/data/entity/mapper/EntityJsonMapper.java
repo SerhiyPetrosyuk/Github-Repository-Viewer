@@ -5,7 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.mlsdev.serhiy.data.entity.follows.Followers;
 import com.mlsdev.serhiy.data.entity.follows.Following;
-import com.mlsdev.serhiy.data.entity.repository.Item;
+import com.mlsdev.serhiy.data.entity.repository.RepositoryEntity;
 import com.mlsdev.serhiy.data.entity.user.SearchUserResult;
 
 import java.lang.reflect.Type;
@@ -68,16 +68,16 @@ public class EntityJsonMapper {
     }
 
     /**
-     * Transforms from a valid json into {@link java.util.Collection< com.mlsdev.serhiy.data.entity.repository.Item >}
+     * Transforms from a valid json into {@link java.util.Collection<RepositoryEntity>}
      * @param jsonSearchReposResponse A json representation of a repository collection
-     * @return {@link java.util.Collection< com.mlsdev.serhiy.data.entity.repository.Item >}
+     * @return {@link java.util.Collection<RepositoryEntity>}
      * @throws com.google.gson.JsonSyntaxException if a json string isn't a valid json structure.
      * */
-    public Collection<Item> transformRepositoryCollection(String jsonSearchReposResponse) throws JsonSyntaxException {
+    public Collection<RepositoryEntity> transformRepositoryCollection(String jsonSearchReposResponse) throws JsonSyntaxException {
 
         try {
-            Type collectionType = new TypeToken<Collection<Item>>(){}.getType();
-            Collection<Item> repositoryCollection = gson.fromJson(jsonSearchReposResponse, collectionType);
+            Type collectionType = new TypeToken<Collection<RepositoryEntity>>(){}.getType();
+            Collection<RepositoryEntity> repositoryCollection = gson.fromJson(jsonSearchReposResponse, collectionType);
             return repositoryCollection;
         } catch (JsonSyntaxException exception){
             throw exception;

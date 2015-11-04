@@ -8,7 +8,7 @@ import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.domain.model.GithubUser;
 import com.mlsdev.serhiy.domain.repository.GithubUserRepository;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -23,7 +23,6 @@ public class GithubRepositoryImpl implements GithubUserRepository {
     private GitApiService mGitApiService;
 
     /*   Callbacks   */
-    private GithubRepositoryCallback githubRepositoryCallback;
     private LoadAvatarCallback       loadAvatarCallback;
     private FollowersCallback        followersCallback;
     private FollowingsCallback       followingsCallback;
@@ -50,9 +49,21 @@ public class GithubRepositoryImpl implements GithubUserRepository {
     }
 
     @Override
-    public void searchGithubRepositories(String repositoriesUrl, GithubRepositoryCallback callback) {
-        githubRepositoryCallback = callback;
-        mRestApi.searchRepositoriesRequest(repositoriesUrl, repositoriesRequestCallback);
+    public void getRepositories(String userName, final RepositoryCallBack<List<GithubRepository>> callback) {
+        mGitApiService.getRepositories(
+                userName,
+                new GitApiService.ApiCallback<List<GithubRepository>>() {
+                    @Override
+                    public void onSuccess(List<GithubRepository> githubRepositoryList) {
+                        callback.onSuccess(githubRepositoryList);
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        callback.onError(errorMessage);
+                    }
+                }
+        );
     }
 
     @Override
@@ -72,18 +83,6 @@ public class GithubRepositoryImpl implements GithubUserRepository {
         loadAvatarCallback = avatarCallback;
         mRestApi.loadAvatarRequest(url, loadAvatarRequestCallback);
     }
-
-    private RestApi.SearchRepositoriesRequestCallback repositoriesRequestCallback = new RestApi.SearchRepositoriesRequestCallback() {
-        @Override
-        public void onRequestSuccess(Collection<GithubRepository> githubRepositories) {
-            githubRepositoryCallback.onRepositoriesLoaded(githubRepositories);
-        }
-
-        @Override
-        public void onError() {
-            githubRepositoryCallback.onError();
-        }
-    };
 
     private RestApi.LoadAvatarRequestCallback loadAvatarRequestCallback = new RestApi.LoadAvatarRequestCallback() {
         @Override
