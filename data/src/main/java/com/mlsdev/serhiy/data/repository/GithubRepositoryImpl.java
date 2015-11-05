@@ -1,6 +1,7 @@
 package com.mlsdev.serhiy.data.repository;
 
 import com.mlsdev.serhiy.data.entity.mapper.ModelEntityMapper;
+import com.mlsdev.serhiy.data.entity.repository.RepositoryEntity;
 import com.mlsdev.serhiy.data.entity.user.SearchUserResult;
 import com.mlsdev.serhiy.data.net.GitApiService;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
@@ -41,21 +42,14 @@ public class GithubRepositoryImpl implements GithubUserRepository {
     }
 
     @Override
-    public void getRepositories(String userName, final RepositoryCallBack<List<GithubRepository>> callback) {
-        mGitApiService.getRepositories(
-                userName,
-                new GitApiService.ApiCallback<List<GithubRepository>>() {
+    public Observable<List<GithubRepository>> getRepositories(String userName) {
+        return mGitApiService.getRepositories(userName)
+                .map(new Func1<List<RepositoryEntity>, List<GithubRepository>>() {
                     @Override
-                    public void onSuccess(List<GithubRepository> githubRepositoryList) {
-                        callback.onSuccess(githubRepositoryList);
+                    public List<GithubRepository> call(List<RepositoryEntity> repositoryEntities) {
+                        return mapper.transformRepositoryEntities(repositoryEntities);
                     }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        callback.onError(errorMessage);
-                    }
-                }
-        );
+                });
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.facebook.share.model.ShareLinkContent;
+import com.mlsdev.serhiy.domain.interactor.abstraction.BaseSubscriber;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowersUseCase;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowingsUseCase;
 import com.mlsdev.serhiy.domain.interactor.abstraction.InteractorCallback;
@@ -71,7 +72,7 @@ public class DetailUserInfoPresenter implements DetailPresenter {
 
     @Override
     public void pause() {
-
+        mRepositoryUseCase.unsubscribe();
     }
 
     @Override
@@ -87,7 +88,7 @@ public class DetailUserInfoPresenter implements DetailPresenter {
     @Override
     public void searchRepositories() {
         String userName = mUserData.getString(EXTRA_USER_NAME, "");
-        mRepositoryUseCase.execute(userName, mSerachRepositoriesCallback);
+        mRepositoryUseCase.execute(userName, new LoadRepositoriesSubscriber());
     }
 
     @Override
@@ -174,18 +175,24 @@ public class DetailUserInfoPresenter implements DetailPresenter {
         }
     };
 
-    private InteractorCallback<List<GithubRepository>> mSerachRepositoriesCallback = new InteractorCallback<List<GithubRepository>>() {
+    public class LoadRepositoriesSubscriber extends BaseSubscriber<List<GithubRepository>> {
         @Override
-        public void onSuccess(List<GithubRepository> data) {
-            List<RepositoryModel> repositoryModels = mRepositoryDataMapper.transformRepositoryCollectionData(data);
+        public void onCompleted() {
+            mView.stopRepositoryLoading();
+        }
+
+        @Override
+        public void onNext(List<GithubRepository> githubRepositoryList) {
+            List<RepositoryModel> repositoryModels = mRepositoryDataMapper
+                    .transformRepositoryCollectionData(githubRepositoryList);
             mRepositoryListAdapter.setData(repositoryModels);
             mView.setListAdapter(mRepositoryListAdapter);
         }
 
         @Override
-        public void onError(String errorMessage) {
-            mView.showError(errorMessage);
+        public void onError(Throwable e) {
+            mView.showError(e.getMessage());
         }
-    };
+    }
 
 }

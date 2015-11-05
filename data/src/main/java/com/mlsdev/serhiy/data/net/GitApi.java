@@ -27,14 +27,10 @@ public interface GitApi {
     String USER_NAME_PATH = "userName";
 
     @GET(SEARCH + "/" + USERS)
-    Call<SearchUserResult> searchUser(@Query(SEARCH_QUERY) String searchQuery);
-
-    @GET(SEARCH + "/" + USERS)
     Observable<SearchUserResult> searchUserObservable(@Query(SEARCH_QUERY) String searchQuery);
 
-
     @GET(USERS + "/{" + USER_NAME_PATH + "}/" + REPOS)
-    Call<List<RepositoryEntity>> getRepositories(@Path(USER_NAME_PATH) String userName);
+    Observable<List<RepositoryEntity>> getRepositories(@Path(USER_NAME_PATH) String userName);
 
     @GET(USERS + "/{" + USER_NAME_PATH + "}/" + FOLLOWERS)
     Call<List<Followers>> getFollowers(@Path(USER_NAME_PATH) String userName);

@@ -33,9 +33,8 @@ public interface GithubUserRepository {
      * Search a collection of {@link GithubUserRepository}.
      *
      * @param userName The user's name is for the retrieving data;
-     * @param callback A {@link RepositoryCallBack} is for notifying a client.
      */
-    void getRepositories(String userName, final RepositoryCallBack<List<GithubRepository>> callback);
+    Observable<List<GithubRepository>> getRepositories(String userName);
 
     /**
      * Get a followers number by username.

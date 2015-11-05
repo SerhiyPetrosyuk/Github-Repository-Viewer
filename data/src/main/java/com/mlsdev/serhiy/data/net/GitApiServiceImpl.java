@@ -5,7 +5,6 @@ import com.mlsdev.serhiy.data.entity.follows.Following;
 import com.mlsdev.serhiy.data.entity.mapper.ModelEntityMapper;
 import com.mlsdev.serhiy.data.entity.repository.RepositoryEntity;
 import com.mlsdev.serhiy.data.entity.user.SearchUserResult;
-import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
@@ -51,19 +50,8 @@ public class GitApiServiceImpl implements GitApiService {
     }
 
     @Override
-    public void getRepositories(String userName, final ApiCallback<List<GithubRepository>> callback) {
-        final Call<List<RepositoryEntity>> getRepositoryListCall = gitApi.getRepositories(userName);
-        getRepositoryListCall.enqueue(new Callback<List<RepositoryEntity>>() {
-            @Override
-            public void onResponse(Response<List<RepositoryEntity>> response, Retrofit retrofit) {
-                callback.onSuccess(mapper.transformRepositoryEntities(response.body()));
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                callback.onError(t.getMessage());
-            }
-        });
+    public Observable<List<RepositoryEntity>> getRepositories(String userName) {
+        return gitApi.getRepositories(userName);
     }
 
     @Override
