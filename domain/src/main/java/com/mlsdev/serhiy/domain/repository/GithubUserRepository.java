@@ -9,6 +9,8 @@ import com.mlsdev.serhiy.domain.model.GithubUser;
 
 import java.util.List;
 
+import rx.Observable;
+
 /**
  * Interface that represents a Repository for getting {@link GithubUser, GithubUserRepository} related data.
  */
@@ -24,9 +26,8 @@ public interface GithubUserRepository {
      * Search a {@link GithubUser} by name.
      *
      * @param searchedName The searched name is for the searching and retrieving data;
-     * @param callback     A {@link RepositoryCallBack} is for notifying a client.
      */
-    public void searchGithubUserByName(String searchedName, RepositoryCallBack<GithubUser> callback);
+    Observable<GithubUser> searchGithubUserByName(String searchedName);
 
     /**
      * Search a collection of {@link GithubUserRepository}.

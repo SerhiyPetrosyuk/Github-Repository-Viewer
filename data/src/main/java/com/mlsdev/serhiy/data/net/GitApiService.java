@@ -1,9 +1,11 @@
 package com.mlsdev.serhiy.data.net;
 
+import com.mlsdev.serhiy.data.entity.user.SearchUserResult;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
-import com.mlsdev.serhiy.domain.model.GithubUser;
 
 import java.util.List;
+
+import rx.Observable;
 
 /**
  * Created by serhiy on 03.11.15.
@@ -15,7 +17,7 @@ public interface GitApiService {
         void onError(String errorMessage);
     }
 
-    void searchUser(String searchedName, final ApiCallback<GithubUser> callback);
+    Observable<SearchUserResult> searchUser(String searchedName);
 
     void getRepositories(String userName, final ApiCallback<List<GithubRepository>> callback);
 

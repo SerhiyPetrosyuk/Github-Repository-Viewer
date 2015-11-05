@@ -11,6 +11,7 @@ import retrofit.Call;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import rx.Observable;
 
 /**
  * Created by serhiy on 02.11.15.
@@ -27,6 +28,10 @@ public interface GitApi {
 
     @GET(SEARCH + "/" + USERS)
     Call<SearchUserResult> searchUser(@Query(SEARCH_QUERY) String searchQuery);
+
+    @GET(SEARCH + "/" + USERS)
+    Observable<SearchUserResult> searchUserObservable(@Query(SEARCH_QUERY) String searchQuery);
+
 
     @GET(USERS + "/{" + USER_NAME_PATH + "}/" + REPOS)
     Call<List<RepositoryEntity>> getRepositories(@Path(USER_NAME_PATH) String userName);

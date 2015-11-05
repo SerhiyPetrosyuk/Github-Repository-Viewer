@@ -1,17 +1,23 @@
 package com.mlsdev.serhiy.domain.interactor.implementation;
 
-import com.mlsdev.serhiy.domain.interactor.abstraction.InteractorCallback;
 import com.mlsdev.serhiy.domain.interactor.abstraction.SearchUserUseCase;
 import com.mlsdev.serhiy.domain.model.GithubUser;
 import com.mlsdev.serhiy.domain.repository.GithubUserRepository;
 
 import javax.inject.Inject;
 
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.Subscribers;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by Serhiy Petrosyuk on 17.04.15.
  */
 public class SearchUserUseCaseImpl implements SearchUserUseCase {
     private GithubUserRepository mGithubUserRepository;
+    private Subscription subscription = Subscribers.empty();
 
     @Inject
     public SearchUserUseCaseImpl(GithubUserRepository githubUserRepository) {
@@ -19,18 +25,17 @@ public class SearchUserUseCaseImpl implements SearchUserUseCase {
     }
 
     @Override
-    public void execute(String searchedName, final InteractorCallback<GithubUser> callback) {
-        mGithubUserRepository.searchGithubUserByName(searchedName, new GithubUserRepository.RepositoryCallBack<GithubUser>() {
-            @Override
-            public void onSuccess(GithubUser data) {
-                callback.onSuccess(data);
-            }
+    public void execute(String searchedName, Subscriber<GithubUser> subscriber) {
+        subscription = mGithubUserRepository.searchGithubUserByName(searchedName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
 
-            @Override
-            public void onError(String errorMessage) {
-                callback.onError(errorMessage);
-            }
-        });
+    @Override
+    public void unsubscribe() {
+        if (!subscription.isUnsubscribed())
+            subscription.unsubscribe();
     }
 
 }

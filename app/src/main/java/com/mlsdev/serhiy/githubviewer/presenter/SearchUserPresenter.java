@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.mlsdev.serhiy.domain.interactor.abstraction.InteractorCallback;
+import com.mlsdev.serhiy.domain.interactor.abstraction.BaseSubscriber;
 import com.mlsdev.serhiy.domain.interactor.abstraction.SearchUserUseCase;
 import com.mlsdev.serhiy.domain.model.GithubUser;
 import com.mlsdev.serhiy.githubviewer.view.SearchView;
@@ -18,14 +18,11 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class SearchUserPresenter implements SearchPresenter {
-
     public static final String EXTRA_USER_NAME = "user_name_extra";
     public static final String EXTRA_USER_PROFILE = "user_profile_link";
     public static final String EXTRA_USER_AVATAR = "user_avatar_link";
     public static final String EXTRA_USER_REPOS = "user_repositories_link";
-
     private SearchView mSearchView;
-
     private SearchUserUseCase mSearchUserUseCase;
     @Inject
     Context context;
@@ -43,7 +40,7 @@ public class SearchUserPresenter implements SearchPresenter {
     @Override
     public void searchUser(String searchedName) {
         mSearchView.onStartSearch();
-        mSearchUserUseCase.execute(searchedName, callback);
+        mSearchUserUseCase.execute(searchedName, new SearchUserSubscriber());
     }
 
     @Override
@@ -53,24 +50,33 @@ public class SearchUserPresenter implements SearchPresenter {
 
     @Override
     public void pause() {
-
+        mSearchUserUseCase.unsubscribe();
     }
 
-    private InteractorCallback<GithubUser> callback = new InteractorCallback<GithubUser>() {
+    public void onSearchedUser(GithubUser githubUser) {
+        Intent userData = new Intent(context, DetailActivity.class);
+        userData.putExtra(EXTRA_USER_NAME, githubUser.getUserName());
+        userData.putExtra(EXTRA_USER_PROFILE, githubUser.getUserProfileLink());
+        userData.putExtra(EXTRA_USER_AVATAR, githubUser.getUserAvatar());
+        userData.putExtra(EXTRA_USER_REPOS, githubUser.getUserReposLink());
+        mSearchView.onSearchSuccess(userData);
+    }
+
+    public class SearchUserSubscriber extends BaseSubscriber<GithubUser> {
+
         @Override
-        public void onSuccess(GithubUser githubUser) {
-            Intent userData = new Intent(context, DetailActivity.class);
-            userData.putExtra(EXTRA_USER_NAME, githubUser.getUserName());
-            userData.putExtra(EXTRA_USER_PROFILE, githubUser.getUserProfileLink());
-            userData.putExtra(EXTRA_USER_AVATAR, githubUser.getUserAvatar());
-            userData.putExtra(EXTRA_USER_REPOS, githubUser.getUserReposLink());
-            mSearchView.onSearchSuccess(userData);
+        public void onCompleted() {
+            mSearchView.onStopSearch();
         }
 
         @Override
-        public void onError(String errorMessage) {
-            mSearchView.onStopSearch();
+        public void onError(Throwable e) {
             mSearchView.onSearchError();
         }
-    };
+
+        @Override
+        public void onNext(GithubUser githubUser) {
+            onSearchedUser(githubUser);
+        }
+    }
 }

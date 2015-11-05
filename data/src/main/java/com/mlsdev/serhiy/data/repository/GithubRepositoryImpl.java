@@ -1,5 +1,7 @@
 package com.mlsdev.serhiy.data.repository;
 
+import com.mlsdev.serhiy.data.entity.mapper.ModelEntityMapper;
+import com.mlsdev.serhiy.data.entity.user.SearchUserResult;
 import com.mlsdev.serhiy.data.net.GitApiService;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.domain.model.GithubUser;
@@ -10,31 +12,32 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import rx.Observable;
+import rx.functions.Func1;
+
 /**
  * Created by Serhiy Petrosyuk on 20.04.15.
  */
 @Singleton
 public class GithubRepositoryImpl implements GithubUserRepository {
     private GitApiService mGitApiService;
+    private ModelEntityMapper mapper;
 
     @Inject
-    public GithubRepositoryImpl(GitApiService gitApiService) {
+    public GithubRepositoryImpl(GitApiService gitApiService, ModelEntityMapper mapper) {
         mGitApiService = gitApiService;
+        this.mapper = mapper;
     }
 
     @Override
-    public void searchGithubUserByName(String searchedName, final RepositoryCallBack<GithubUser> callback) {
-        mGitApiService.searchUser(searchedName, new GitApiService.ApiCallback<GithubUser>() {
-            @Override
-            public void onSuccess(GithubUser data) {
-                callback.onSuccess(data);
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                callback.onError(errorMessage);
-            }
-        });
+    public Observable<GithubUser> searchGithubUserByName(String searchedName) {
+        return mGitApiService.searchUser(searchedName)
+                .map(new Func1<SearchUserResult, GithubUser>() {
+                    @Override
+                    public GithubUser call(SearchUserResult searchUserResult) {
+                        return mapper.transformUserEntity(searchUserResult.getItems().get(0));
+                    }
+                });
     }
 
     @Override

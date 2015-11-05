@@ -6,7 +6,6 @@ import com.mlsdev.serhiy.data.entity.mapper.ModelEntityMapper;
 import com.mlsdev.serhiy.data.entity.repository.RepositoryEntity;
 import com.mlsdev.serhiy.data.entity.user.SearchUserResult;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
-import com.mlsdev.serhiy.domain.model.GithubUser;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
@@ -19,6 +18,8 @@ import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
+import retrofit.RxJavaCallAdapterFactory;
+import rx.Observable;
 
 /**
  * Created by serhiy on 03.11.15.
@@ -39,24 +40,14 @@ public class GitApiServiceImpl implements GitApiService {
         gitApi = new Retrofit.Builder()
                 .baseUrl(GitApi.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build()
                 .create(GitApi.class);
     }
 
-    public void searchUser(String searchedName, final ApiCallback<GithubUser> callback) {
-        final Call<SearchUserResult> call = gitApi.searchUser(searchedName);
-        call.enqueue(new Callback<SearchUserResult>() {
-            @Override
-            public void onResponse(Response<SearchUserResult> response, Retrofit retrofit) {
-                GithubUser githubUser = mapper.transformUserEntity(response.body().getItems().get(0));
-                callback.onSuccess(githubUser);
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                callback.onError(t.getMessage());
-            }
-        });
+    @Override
+    public Observable<SearchUserResult> searchUser(String searchedName) {
+        return gitApi.searchUserObservable(searchedName);
     }
 
     @Override
