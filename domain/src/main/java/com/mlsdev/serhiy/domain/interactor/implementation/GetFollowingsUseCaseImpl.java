@@ -1,16 +1,22 @@
 package com.mlsdev.serhiy.domain.interactor.implementation;
 
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowingsUseCase;
-import com.mlsdev.serhiy.domain.interactor.abstraction.InteractorCallback;
 import com.mlsdev.serhiy.domain.repository.GithubUserRepository;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.observers.Subscribers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Serhiy Petrosyuk on 17.04.15.
  */
 public class GetFollowingsUseCaseImpl implements GetFollowingsUseCase {
     private GithubUserRepository mRepository;
+    private Subscription subscription = Subscribers.empty();
 
     @Inject
     public GetFollowingsUseCaseImpl(GithubUserRepository repository) {
@@ -18,21 +24,16 @@ public class GetFollowingsUseCaseImpl implements GetFollowingsUseCase {
     }
 
     @Override
-    public void execute(String userName, final InteractorCallback<Integer> callback) {
-        mRepository.getFollowingsNumber(
-                userName,
-                new GithubUserRepository.RepositoryCallBack<Integer>() {
-                    @Override
-                    public void onSuccess(Integer followings) {
-                        callback.onSuccess(followings);
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        callback.onError(errorMessage);
-                    }
-                }
-        );
+    public void execute(String userName, Subscriber<Integer> subscriber) {
+        subscription = mRepository.getFollowingsNumber(userName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
     }
 
+    @Override
+    public void unsubscribe() {
+        if (!subscription.isUnsubscribed())
+            subscription.unsubscribe();
+    }
 }

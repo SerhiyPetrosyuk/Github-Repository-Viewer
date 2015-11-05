@@ -40,16 +40,14 @@ public interface GithubUserRepository {
      * Get a followers number by username.
      *
      * @param userName The username is used to get user's followers.
-     * @param callback A {@link RepositoryCallBack} is for notifying a client.
      */
-    public void getFollowersNumber(String userName, RepositoryCallBack<Integer> callback);
+    Observable<Integer> getFollowersNumber(String userName);
 
     /**
      * Get a followings number by username.
      *
      * @param userName The username is used to get user's followings.
-     * @param callback A {@link RepositoryCallBack} is for notifying a client.
      */
-    public void getFollowingsNumber(String userName, RepositoryCallBack<Integer> callback);
+    Observable<Integer> getFollowingsNumber(String userName);
 
 }

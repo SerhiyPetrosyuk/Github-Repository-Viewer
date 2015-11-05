@@ -53,33 +53,14 @@ public class GithubRepositoryImpl implements GithubUserRepository {
     }
 
     @Override
-    public void getFollowersNumber(String userName, final RepositoryCallBack<Integer> callback) {
-        mGitApiService.getFollowers(userName, new GitApiService.ApiCallback<Integer>() {
-            @Override
-            public void onSuccess(Integer followers) {
-                callback.onSuccess(followers);
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                callback.onError(errorMessage);
-            }
-        });
+    public Observable<Integer> getFollowersNumber(String userName) {
+        return mGitApiService.getFollowers(userName);
     }
 
     @Override
-    public void getFollowingsNumber(String userName, final RepositoryCallBack<Integer> callback) {
-        mGitApiService.getFollowings(userName, new GitApiService.ApiCallback<Integer>() {
-            @Override
-            public void onSuccess(Integer followings) {
-                callback.onSuccess(followings);
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                callback.onError(errorMessage);
-            }
-        });
+    public Observable<Integer> getFollowingsNumber(String userName) {
+        return mGitApiService.getFollowings(userName);
     }
+
 
 }

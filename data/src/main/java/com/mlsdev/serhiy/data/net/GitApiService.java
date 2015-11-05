@@ -21,7 +21,7 @@ public interface GitApiService {
 
     Observable<List<RepositoryEntity>> getRepositories(String userName);
 
-    void getFollowers(String userName, final ApiCallback<Integer> callback);
+    Observable<Integer> getFollowers(String userName);
 
-    void getFollowings(String userName, final ApiCallback<Integer> callback);
+    Observable<Integer> getFollowings(String userName);
 }

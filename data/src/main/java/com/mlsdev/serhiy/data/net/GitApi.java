@@ -7,7 +7,6 @@ import com.mlsdev.serhiy.data.entity.user.SearchUserResult;
 
 import java.util.List;
 
-import retrofit.Call;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -33,8 +32,8 @@ public interface GitApi {
     Observable<List<RepositoryEntity>> getRepositories(@Path(USER_NAME_PATH) String userName);
 
     @GET(USERS + "/{" + USER_NAME_PATH + "}/" + FOLLOWERS)
-    Call<List<Followers>> getFollowers(@Path(USER_NAME_PATH) String userName);
+    Observable<List<Followers>> getFollowers(@Path(USER_NAME_PATH) String userName);
 
     @GET(USERS + "/{" + USER_NAME_PATH + "}/" + FOLLOWINGS)
-    Call<List<Following>> getFollowings(@Path(USER_NAME_PATH) String userName);
+    Observable<List<Following>> getFollowings(@Path(USER_NAME_PATH) String userName);
 }

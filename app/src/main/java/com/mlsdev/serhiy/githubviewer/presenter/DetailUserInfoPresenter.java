@@ -12,7 +12,6 @@ import com.facebook.share.model.ShareLinkContent;
 import com.mlsdev.serhiy.domain.interactor.abstraction.BaseSubscriber;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowersUseCase;
 import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowingsUseCase;
-import com.mlsdev.serhiy.domain.interactor.abstraction.InteractorCallback;
 import com.mlsdev.serhiy.domain.interactor.abstraction.SearchRepositoryUseCase;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.githubviewer.R;
@@ -73,6 +72,8 @@ public class DetailUserInfoPresenter implements DetailPresenter {
     @Override
     public void pause() {
         mRepositoryUseCase.unsubscribe();
+        mFollowersUseCase.unsubscribe();
+        mFollowingsUseCase.unsubscribe();
     }
 
     @Override
@@ -117,8 +118,8 @@ public class DetailUserInfoPresenter implements DetailPresenter {
     @Override
     public void getFollows() {
         String username = getUsername();
-        mFollowersUseCase.execute(username, mGetFollowersCallback);
-        mFollowingsUseCase.execute(username, mGetFollowingsCallback);
+        mFollowersUseCase.execute(username, new LoadFollowersSubscriber());
+        mFollowingsUseCase.execute(username, new LoadFollowingsSubscriber());
     }
 
     @Override
@@ -149,31 +150,31 @@ public class DetailUserInfoPresenter implements DetailPresenter {
         return mUserData.getString(EXTRA_USER_NAME, "");
     }
 
-    private InteractorCallback<Integer> mGetFollowersCallback = new InteractorCallback<Integer>() {
+    public class LoadFollowersSubscriber extends BaseSubscriber<Integer> {
         @Override
-        public void onSuccess(Integer followersNumber) {
+        public void onNext(Integer followersNumber) {
             String followersStr = mContext.getString(R.string.followers, followersNumber);
             mView.setFollowers(followersStr);
         }
 
         @Override
-        public void onError(String errorMessage) {
-            mView.showError(errorMessage);
+        public void onError(Throwable e) {
+            mView.showError(e.getMessage());
         }
-    };
+    }
 
-    private InteractorCallback<Integer> mGetFollowingsCallback = new InteractorCallback<Integer>() {
+    public class LoadFollowingsSubscriber extends BaseSubscriber<Integer> {
         @Override
-        public void onSuccess(Integer followingsNumber) {
-            String followingsString = mContext.getString(R.string.followings, followingsNumber);
-            mView.setFollowings(followingsString);
+        public void onNext(Integer followingsNumber) {
+            String followersStr = mContext.getString(R.string.followings, followingsNumber);
+            mView.setFollowings(followersStr);
         }
 
         @Override
-        public void onError(String errorMessage) {
-            mView.showError(errorMessage);
+        public void onError(Throwable e) {
+            mView.showError(e.getMessage());
         }
-    };
+    }
 
     public class LoadRepositoriesSubscriber extends BaseSubscriber<List<GithubRepository>> {
         @Override
