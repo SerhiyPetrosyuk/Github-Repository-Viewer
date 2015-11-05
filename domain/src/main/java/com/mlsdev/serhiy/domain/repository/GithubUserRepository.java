@@ -9,6 +9,8 @@ import com.mlsdev.serhiy.domain.model.GithubUser;
 
 import java.util.List;
 
+import rx.Observable;
+
 /**
  * Interface that represents a Repository for getting {@link GithubUser, GithubUserRepository} related data.
  */
@@ -24,32 +26,28 @@ public interface GithubUserRepository {
      * Search a {@link GithubUser} by name.
      *
      * @param searchedName The searched name is for the searching and retrieving data;
-     * @param callback     A {@link RepositoryCallBack} is for notifying a client.
      */
-    public void searchGithubUserByName(String searchedName, RepositoryCallBack<GithubUser> callback);
+    Observable<GithubUser> searchGithubUserByName(String searchedName);
 
     /**
      * Search a collection of {@link GithubUserRepository}.
      *
      * @param userName The user's name is for the retrieving data;
-     * @param callback A {@link RepositoryCallBack} is for notifying a client.
      */
-    void getRepositories(String userName, final RepositoryCallBack<List<GithubRepository>> callback);
+    Observable<List<GithubRepository>> getRepositories(String userName);
 
     /**
      * Get a followers number by username.
      *
      * @param userName The username is used to get user's followers.
-     * @param callback A {@link RepositoryCallBack} is for notifying a client.
      */
-    public void getFollowersNumber(String userName, RepositoryCallBack<Integer> callback);
+    Observable<Integer> getFollowersNumber(String userName);
 
     /**
      * Get a followings number by username.
      *
      * @param userName The username is used to get user's followings.
-     * @param callback A {@link RepositoryCallBack} is for notifying a client.
      */
-    public void getFollowingsNumber(String userName, RepositoryCallBack<Integer> callback);
+    Observable<Integer> getFollowingsNumber(String userName);
 
 }

@@ -2,8 +2,9 @@ package com.mlsdev.serhiy.domain.interactor.abstraction;
 
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 
-import java.util.Collection;
 import java.util.List;
+
+import rx.Subscriber;
 
 /**
  * Created by Serhiy Petrosyuk on 17.04.15.
@@ -11,19 +12,11 @@ import java.util.List;
 public interface SearchRepositoryUseCase {
 
     /**
-     * Callback used to be notified when either a repositories have been loaded or an error happened.
-     */
-    public interface Callback {
-        void onUserDataLoaded(Collection<GithubRepository> repositories);
-        void onError();
-    }
-
-    /**
      * Execute this use case
      *
      * @param userName The user's name is for the retrieving data;
-     * @param callback {@link Callback} is for notifying a client.
      */
-    void execute(String userName, final InteractorCallback<List<GithubRepository>> callback);
+    void execute(String userName, Subscriber<List<GithubRepository>> subscriber);
 
+    void unsubscribe();
 }

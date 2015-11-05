@@ -36,4 +36,7 @@ dependencies {
     // Junit
     androidTestCompile 'junit:junit:4.12'
 
+    // RxJava
+    compile 'io.reactivex:rxjava:1.0.14'
+    compile 'io.reactivex:rxandroid:1.0.1'
 }
