@@ -16,12 +16,6 @@ import rx.Observable;
  */
 public interface GithubUserRepository {
 
-    interface RepositoryCallBack<T> {
-        void onSuccess(T data);
-
-        void onError(String errorMessage);
-    }
-
     /**
      * Search a {@link GithubUser} by name.
      *
