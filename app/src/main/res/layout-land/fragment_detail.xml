@@ -120,9 +120,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ListView
-                android:id="@+id/lv_repository_list"
-                style="@style/list_view_style"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
             <ProgressBar
                 android:id="@+id/pd_load_repositories"

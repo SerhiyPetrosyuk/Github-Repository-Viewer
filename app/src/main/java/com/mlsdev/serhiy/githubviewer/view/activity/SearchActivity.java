@@ -20,12 +20,12 @@ public class SearchActivity extends BaseActivity {
         }
 
         getFragmentManager().beginTransaction()
-                .replace(R.id.fl_search_fragment_holder, fragment, SearchFragment.class.getName())
+                .replace(R.id.fl_fragment_holder, fragment, SearchFragment.class.getName())
                 .commit();
     }
 
     @Override
     protected int getContentResource() {
-        return R.layout.activity_main;
+        return R.layout.activity_base;
     }
 }
