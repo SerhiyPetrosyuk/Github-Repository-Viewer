@@ -186,8 +186,7 @@ public class DetailUserInfoPresenter implements DetailPresenter {
         public void onNext(List<GithubRepository> githubRepositoryList) {
             List<RepositoryModel> repositoryModels = mRepositoryDataMapper
                     .transformRepositoryCollectionData(githubRepositoryList);
-            mRepositoryListAdapter.setData(repositoryModels);
-            mView.setListAdapter(mRepositoryListAdapter);
+            mView.showRepositories(repositoryModels);
         }
 
         @Override

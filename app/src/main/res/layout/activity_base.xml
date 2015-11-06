@@ -1,18 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity"
     android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@android:color/white">
 
     <include android:id="@+id/tb_action_bar" layout="@layout/tool_bar"/>
 
     <FrameLayout
-        android:id="@+id/divider"
-        style="@style/divider" />
-
-    <FrameLayout
-        android:id="@+id/fl_search_fragment_holder"
+        android:id="@+id/fl_fragment_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

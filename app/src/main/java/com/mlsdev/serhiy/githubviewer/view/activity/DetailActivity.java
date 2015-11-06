@@ -29,13 +29,13 @@ public class DetailActivity extends BaseActivity {
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fl_detail_fragment_holder, fragment, DetailFragment.class.getName())
+                .replace(R.id.fl_fragment_holder, fragment, DetailFragment.class.getName())
                 .commit();
     }
 
     @Override
     protected int getContentResource() {
-        return R.layout.activity_detail;
+        return R.layout.activity_base;
     }
 
 }

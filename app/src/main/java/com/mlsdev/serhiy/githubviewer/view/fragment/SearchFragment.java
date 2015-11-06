@@ -28,18 +28,23 @@ import butterknife.OnClick;
  * Created by Serhiy Petrosyuk on 16.04.15.
  */
 public class SearchFragment extends Fragment implements SearchView {
-    @Inject SearchPresenter mPresenter;
+    @Inject
+    SearchPresenter mPresenter;
 
-    @InjectView(R.id.btn_search)        ImageButton    mSearchButton;
-    @InjectView(R.id.et_user_name)      EditText       mSearchedNameEditText;
-    @InjectView(R.id.pb_search_screen)  ProgressBar    mProgressBar;
-    @InjectView(R.id.rl_content_holder) RelativeLayout mContentHolder;
+    @InjectView(R.id.btn_search)
+    ImageButton mSearchButton;
+    @InjectView(R.id.et_user_name)
+    EditText mSearchedNameEditText;
+    @InjectView(R.id.pb_search_screen)
+    ProgressBar mProgressBar;
+    @InjectView(R.id.rl_searsh_btn_holder)
+    RelativeLayout mContentHolder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        ((App)getActivity().getApplication()).inject(this);
+        ((App) getActivity().getApplication()).inject(this);
     }
 
     @Nullable
@@ -88,7 +93,7 @@ public class SearchFragment extends Fragment implements SearchView {
     }
 
     @OnClick(R.id.btn_search)
-    public void searchViewOnClick(){
+    public void searchViewOnClick() {
         mPresenter.searchUser(mSearchedNameEditText.getText().toString());
     }
 
