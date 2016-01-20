@@ -1,13 +1,14 @@
 package com.mlsdev.serhiy.githubviewer.view.adapter;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.mlsdev.serhiy.githubviewer.R;
+import com.mlsdev.serhiy.githubviewer.databinding.RepositoryListItemBinding;
 import com.mlsdev.serhiy.githubviewer.model.RepositoryModel;
 
 import java.util.ArrayList;
@@ -33,10 +34,13 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Reposito
 
     @Override
     public void onBindViewHolder(RepositoryHolder holder, int position) {
-        holder.forksNumber.setText(repositoryModels.get(position).getForksNumber().toString());
-        holder.language.setText(context.getString(R.string.language, repositoryModels.get(position).getLanguage()));
-        holder.repositoryName.setText(repositoryModels.get(position).getName());
-        holder.starsNumber.setText(repositoryModels.get(position).getStarsNumber().toString());
+        RepositoryItemViewModel viewModel = new RepositoryItemViewModel(
+                repositoryModels.get(position).getName(),
+                repositoryModels.get(position).getForksNumber(),
+                repositoryModels.get(position).getStarsNumber(),
+                repositoryModels.get(position).getLanguage()
+        );
+        holder.binding.setRepositoryModel(viewModel);
     }
 
     @Override
@@ -45,22 +49,62 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Reposito
     }
 
     public class RepositoryHolder extends RecyclerView.ViewHolder {
-        TextView repositoryName;
-        TextView language;
-        TextView forksNumber;
-        TextView starsNumber;
+        RepositoryListItemBinding binding;
 
         public RepositoryHolder(View itemView) {
             super(itemView);
-            repositoryName = (TextView) itemView.findViewById(R.id.tv_repository_name);
-            language = (TextView) itemView.findViewById(R.id.tv_language_label);
-            forksNumber = (TextView) itemView.findViewById(R.id.tv_forks_number);
-            starsNumber = (TextView) itemView.findViewById(R.id.tv_stars_number);
+            binding = DataBindingUtil.bind(itemView);
         }
     }
 
     public void setData(List<RepositoryModel> repositoryModels) {
         this.repositoryModels = repositoryModels;
         notifyDataSetChanged();
+    }
+
+    public class RepositoryItemViewModel {
+        private String repositoryName;
+        private String forksNumber;
+        private String starsNumber;
+        private String language;
+
+        public RepositoryItemViewModel(String repositoryName, int forksNumber, int starsNumber, String language) {
+            this.repositoryName = repositoryName;
+            setForksNumber(forksNumber);
+            setStarsNumber(starsNumber);
+            setLanguage(language);
+        }
+
+        public void setRepositoryName(String repositoryName) {
+            this.repositoryName = repositoryName;
+        }
+
+        public void setForksNumber(int forksNumber) {
+            this.forksNumber = Integer.toString(forksNumber);
+        }
+
+        public void setStarsNumber(int starsNumber) {
+            this.starsNumber = Integer.toString(starsNumber);
+        }
+
+        public void setLanguage(String language) {
+            this.language = context.getString(R.string.language, language);
+        }
+
+        public String getRepositoryName() {
+            return repositoryName;
+        }
+
+        public String getForksNumber() {
+            return forksNumber;
+        }
+
+        public String getStarsNumber() {
+            return starsNumber;
+        }
+
+        public String getLanguage() {
+            return language;
+        }
     }
 }

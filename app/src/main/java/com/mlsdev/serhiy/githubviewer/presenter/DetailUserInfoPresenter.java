@@ -2,8 +2,6 @@ package com.mlsdev.serhiy.githubviewer.presenter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,9 +16,6 @@ import com.mlsdev.serhiy.githubviewer.R;
 import com.mlsdev.serhiy.githubviewer.model.RepositoryModel;
 import com.mlsdev.serhiy.githubviewer.model.mapper.RepositoryDataMapper;
 import com.mlsdev.serhiy.githubviewer.view.DetailView;
-import com.mlsdev.serhiy.githubviewer.view.adapter.RepositoryListAdapter;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -37,7 +32,6 @@ import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA
 
 @Singleton
 public class DetailUserInfoPresenter implements DetailPresenter {
-
     private Bundle mUserData;
     private DetailView mView;
 
@@ -46,7 +40,6 @@ public class DetailUserInfoPresenter implements DetailPresenter {
     private GetFollowingsUseCase mFollowingsUseCase;
     private SearchRepositoryUseCase mRepositoryUseCase;
     private RepositoryDataMapper mRepositoryDataMapper;
-    private RepositoryListAdapter mRepositoryListAdapter;
     Context mContext;
 
     @Inject
@@ -54,13 +47,11 @@ public class DetailUserInfoPresenter implements DetailPresenter {
                                    GetFollowingsUseCase mFollowingsUseCase,
                                    SearchRepositoryUseCase mRepositoryUseCase,
                                    RepositoryDataMapper repositoryDataMapper,
-                                   RepositoryListAdapter repositoryListAdapter,
                                    Context context) {
         this.mFollowersUseCase = mFollowersUseCase;
         this.mFollowingsUseCase = mFollowingsUseCase;
         this.mRepositoryUseCase = mRepositoryUseCase;
         this.mRepositoryDataMapper = repositoryDataMapper;
-        this.mRepositoryListAdapter = repositoryListAdapter;
         this.mContext = context;
     }
 
@@ -95,24 +86,7 @@ public class DetailUserInfoPresenter implements DetailPresenter {
     @Override
     public void loadUserAvatar() {
         String imageUrl = mUserData.getString(EXTRA_USER_AVATAR, "");
-        Target imageTarget = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                mView.setupUserAvatar(bitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-
-        Picasso.with(mContext).load(imageUrl).into(imageTarget);
+        mView.setupUserAvatar(imageUrl);
     }
 
     @Override
