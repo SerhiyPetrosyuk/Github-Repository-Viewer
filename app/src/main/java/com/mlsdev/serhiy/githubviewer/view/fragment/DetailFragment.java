@@ -1,7 +1,6 @@
 package com.mlsdev.serhiy.githubviewer.view.fragment;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ObservableField;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -25,10 +24,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA_USER_NAME;
-
 public class DetailFragment extends Fragment implements DetailView {
-    private DetailViewModel viewModel;
     private RecycleAdapter recycleAdapter;
     private FragmentDetailBinding binding;
     private Bundle mUserData;
@@ -46,32 +42,13 @@ public class DetailFragment extends Fragment implements DetailView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_detail, container, false);
-        viewModel = new DetailViewModel();
         binding = DataBindingUtil.bind(view);
-        binding.setViewModel(viewModel);
-        viewModel.userName.set(mUserData.getString(EXTRA_USER_NAME));
         mPresenter.setDetailView(this);
-        mPresenter.setupUserData(mUserData);
-        mPresenter.loadUserAvatar();
+        mPresenter.setupUserData(mUserData, binding);
         mPresenter.getFollows();
         mPresenter.searchRepositories();
         initRecyclerView();
         return view;
-    }
-
-    @Override
-    public void setupUserAvatar(String imageUrl) {
-        viewModel.imageUrl.set(imageUrl);
-    }
-
-    @Override
-    public void setFollowers(String followersString) {
-        viewModel.followers.set(followersString);
-    }
-
-    @Override
-    public void setFollowings(String followingsString) {
-        viewModel.followings.set(followingsString);
     }
 
     @Override
@@ -102,25 +79,4 @@ public class DetailFragment extends Fragment implements DetailView {
         binding.recyclerView.setAdapter(recycleAdapter);
     }
 
-    public class DetailViewModel {
-        public final ObservableField<String> userName = new ObservableField<>();
-        public final ObservableField<String> imageUrl = new ObservableField<>();
-        public final ObservableField<String> followers = new ObservableField<>();
-        public final ObservableField<String> followings = new ObservableField<>();
-
-        public DetailViewModel() {
-            userName.set(null);
-            followers.set(null);
-            followings.set(null);
-            imageUrl.set(null);
-        }
-
-        public void onOpenWebVersion(View view) {
-            mPresenter.openProfileInBrowser();
-        }
-
-        public void onShare(View view) {
-            mPresenter.share();
-        }
-    }
 }

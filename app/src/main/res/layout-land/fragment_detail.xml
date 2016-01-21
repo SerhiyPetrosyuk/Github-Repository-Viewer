@@ -4,8 +4,8 @@
     <data>
 
         <variable
-            name="viewModel"
-            type="com.mlsdev.serhiy.githubviewer.view.fragment.DetailFragment.DetailViewModel" />
+            name="presenter"
+            type="com.mlsdev.serhiy.githubviewer.presenter.DetailUserInfoPresenter" />
     </data>
 
     <LinearLayout
@@ -36,7 +36,7 @@
                     android:layout_marginBottom="32dp"
                     android:layout_weight="5"
                     android:gravity="center"
-                    android:text="@{viewModel.followers}" />
+                    android:text="@{presenter.followers}" />
 
                 <ImageButton
                     android:id="@+id/ib_open_in_web"
@@ -44,7 +44,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="5"
                     android:background="@drawable/transparent_bg"
-                    android:onClick="@{viewModel.onOpenWebVersion}"
+                    android:onClick="@{presenter.onOpenWebVersion}"
                     android:scaleType="centerInside"
                     android:src="@mipmap/ic_open_in_web" />
 
@@ -62,7 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="32dp"
-                    android:text="@{viewModel.userName}" />
+                    android:text="@{presenter.userName}" />
 
                 <com.mikhaellopez.circularimageview.CircularImageView
                     android:layout_width="100dp"
@@ -70,7 +70,7 @@
                     app:border_color="@color/primary"
                     app:border_width="0dp"
                     app:errorImage="@{@drawable/placeholder}"
-                    app:imageUrl="@{viewModel.imageUrl}"
+                    app:imageUrl="@{presenter.imageUrl}"
                     app:shadow="false"
                     app:shadow_color="#767676" />
 
@@ -99,7 +99,7 @@
                     android:layout_marginBottom="32dp"
                     android:layout_weight="5"
                     android:gravity="center"
-                    android:text="@{viewModel.followings}" />
+                    android:text="@{presenter.followings}" />
 
                 <ImageButton
                     android:id="@+id/ib_share"
@@ -107,7 +107,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="5"
                     android:background="@drawable/transparent_bg"
-                    android:onClick="@{viewModel.onShare}"
+                    android:onClick="@{presenter.onShare}"
                     android:scaleType="centerInside"
                     android:src="@mipmap/ic_share_action" />
             </LinearLayout>

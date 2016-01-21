@@ -2,9 +2,11 @@ package com.mlsdev.serhiy.githubviewer.presenter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.ObservableField;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.View;
 
 import com.facebook.share.model.ShareLinkContent;
 import com.mlsdev.serhiy.domain.interactor.abstraction.BaseSubscriber;
@@ -13,6 +15,7 @@ import com.mlsdev.serhiy.domain.interactor.abstraction.GetFollowingsUseCase;
 import com.mlsdev.serhiy.domain.interactor.abstraction.SearchRepositoryUseCase;
 import com.mlsdev.serhiy.domain.model.GithubRepository;
 import com.mlsdev.serhiy.githubviewer.R;
+import com.mlsdev.serhiy.githubviewer.databinding.FragmentDetailBinding;
 import com.mlsdev.serhiy.githubviewer.model.RepositoryModel;
 import com.mlsdev.serhiy.githubviewer.model.mapper.RepositoryDataMapper;
 import com.mlsdev.serhiy.githubviewer.view.DetailView;
@@ -29,11 +32,14 @@ import static com.mlsdev.serhiy.githubviewer.presenter.SearchUserPresenter.EXTRA
 /**
  * Created by Serhiy Petrosyuk on 20.04.15.
  */
-
 @Singleton
 public class DetailUserInfoPresenter implements DetailPresenter {
     private Bundle mUserData;
     private DetailView mView;
+    public final ObservableField<String> userName = new ObservableField<>();
+    public final ObservableField<String> imageUrl = new ObservableField<>();
+    public final ObservableField<String> followers = new ObservableField<>();
+    public final ObservableField<String> followings = new ObservableField<>();
 
     /*   dependencies   */
     private GetFollowersUseCase mFollowersUseCase;
@@ -53,6 +59,10 @@ public class DetailUserInfoPresenter implements DetailPresenter {
         this.mRepositoryUseCase = mRepositoryUseCase;
         this.mRepositoryDataMapper = repositoryDataMapper;
         this.mContext = context;
+        userName.set(null);
+        followers.set(null);
+        followings.set(null);
+        imageUrl.set(null);
     }
 
     @Override
@@ -73,20 +83,16 @@ public class DetailUserInfoPresenter implements DetailPresenter {
     }
 
     @Override
-    public void setupUserData(Bundle userData) {
+    public void setupUserData(@NonNull Bundle userData, FragmentDetailBinding detailBinding) {
+        detailBinding.setPresenter(this);
         mUserData = userData;
+        userName.set(userData.getString(EXTRA_USER_NAME, ""));
+        imageUrl.set(userData.getString(EXTRA_USER_AVATAR, ""));
     }
 
     @Override
     public void searchRepositories() {
-        String userName = mUserData.getString(EXTRA_USER_NAME, "");
-        mRepositoryUseCase.execute(userName, new LoadRepositoriesSubscriber());
-    }
-
-    @Override
-    public void loadUserAvatar() {
-        String imageUrl = mUserData.getString(EXTRA_USER_AVATAR, "");
-        mView.setupUserAvatar(imageUrl);
+        mRepositoryUseCase.execute(userName.get(), new LoadRepositoriesSubscriber());
     }
 
     @Override
@@ -128,7 +134,7 @@ public class DetailUserInfoPresenter implements DetailPresenter {
         @Override
         public void onNext(Integer followersNumber) {
             String followersStr = mContext.getString(R.string.followers, followersNumber);
-            mView.setFollowers(followersStr);
+            followers.set(followersStr);
         }
 
         @Override
@@ -140,8 +146,8 @@ public class DetailUserInfoPresenter implements DetailPresenter {
     public class LoadFollowingsSubscriber extends BaseSubscriber<Integer> {
         @Override
         public void onNext(Integer followingsNumber) {
-            String followersStr = mContext.getString(R.string.followings, followingsNumber);
-            mView.setFollowings(followersStr);
+            String followingsStr = mContext.getString(R.string.followings, followingsNumber);
+            followings.set(followingsStr);
         }
 
         @Override
@@ -167,6 +173,14 @@ public class DetailUserInfoPresenter implements DetailPresenter {
         public void onError(Throwable e) {
             mView.showError(e.getMessage());
         }
+    }
+
+    public void onOpenWebVersion(View view) {
+        openProfileInBrowser();
+    }
+
+    public void onShare(View view) {
+        share();
     }
 
 }
