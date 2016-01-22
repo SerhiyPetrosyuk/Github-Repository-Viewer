@@ -171,6 +171,7 @@ public class DetailUserInfoPresenter implements DetailPresenter {
 
         @Override
         public void onError(Throwable e) {
+            mView.stopRepositoryLoading();
             mView.showError(e.getMessage());
         }
     }
